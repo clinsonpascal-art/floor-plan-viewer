@@ -7,9 +7,9 @@
 <style>
   :root{--navy:#0b1f33;--navy2:#0a1a2e;--gold:#c8a24a;--gold-soft:#d8bd7e;--paper:#f5f1e8}
   *{box-sizing:border-box}
-  html,body{margin:0;height:100%;background:var(--navy2);color:var(--paper);
-    font-family:"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
-  #app{display:flex;flex-direction:column;height:100%;max-width:1100px;margin:0 auto}
+  html,body{margin:0;min-height:100%;background:var(--navy2);color:var(--paper);
+    font-family:"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  #app{display:flex;flex-direction:column;height:100vh;max-width:1100px;margin:0 auto}
 
   header{display:flex;align-items:center;gap:.7rem;padding:.6rem 1rem;
     border-bottom:1px solid rgba(200,162,74,.25)}
@@ -65,6 +65,26 @@
     padding:.35rem .65rem;border-radius:20px;font-size:.66rem;cursor:pointer;white-space:nowrap;transition:.15s}
   #rooms button:hover{border-color:var(--gold)}
   #rooms button.active{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:700}
+
+  #gallery{max-width:1100px;margin:0 auto;padding:1.6rem 1rem 2.6rem}
+  #gallery h2{margin:0 0 .2rem;font-size:.78rem;font-weight:700;letter-spacing:.22em;
+    color:var(--gold);text-transform:uppercase}
+  #gallery .gallery-hint{margin:0 0 1.1rem;font-size:.68rem;color:rgba(245,241,232,.5)}
+  #galleryGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.9rem}
+  .room-card{border:1px solid rgba(200,162,74,.28);border-radius:14px;overflow:hidden;cursor:pointer;
+    background:rgba(255,255,255,.03);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+  .room-card:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 10px 22px rgba(0,0,0,.35)}
+  .room-card.active{border-color:var(--gold);box-shadow:0 0 0 2px rgba(200,162,74,.45)}
+  .room-card-thumb{width:100%;aspect-ratio:4/3;background-size:cover;background-position:center;
+    background-color:#182634;overflow:hidden}
+  .room-card-thumb svg{width:100%;height:100%;display:block}
+  .room-card-label{padding:.55rem .7rem;display:flex;align-items:center;justify-content:space-between;gap:.4rem}
+  .room-card-label span:first-child{font-size:.72rem;color:var(--paper);letter-spacing:.02em}
+  .room-card-label .tag{font-size:.56rem;color:var(--gold-soft);letter-spacing:.08em;white-space:nowrap}
+  @media (max-width:520px){
+    #galleryGrid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem}
+    #gallery{padding:1.2rem .8rem 2rem}
+  }
 </style>
 </head>
 <body>
@@ -90,6 +110,12 @@
     <div id="rooms"></div>
   </div>
 </div>
+
+<section id="gallery">
+  <h2>Room Gallery</h2>
+  <p class="gallery-hint">Browse every room in this residence, then click any card to step inside.</p>
+  <div id="galleryGrid"></div>
+</section>
 
 <script>
 /* ===== ENGINE ===== */
@@ -394,6 +420,7 @@ if (typeof window !== "undefined" && window.LUXE_PANOS) { for (const k in window
     });
     document.querySelectorAll("#rooms button").forEach(function(b){b.classList.toggle("active",b.dataset.id===current);});
     document.querySelectorAll(".rm").forEach(function(z){z.classList.toggle("active",z.dataset.id===current);});
+    document.querySelectorAll(".room-card").forEach(function(c){c.classList.toggle("active",c.dataset.id===current);});
     viewpar=lookEl.querySelector("#viewpar");
     look.x=0;look.y=0;applyLook();
   }
@@ -449,6 +476,26 @@ if (typeof window !== "undefined" && window.LUXE_PANOS) { for (const k in window
     s+='<text class="rm-t" x="'+(r.x+r.w/2)+'" y="'+(r.y+r.h/2+2)+'">'+r.name.split(" ")[0]+'</text>';});
   svg.innerHTML=s;
   svg.querySelectorAll(".rm").forEach(function(z){z.addEventListener("click",function(){stopTour();go(z.dataset.id);});});
+
+  /* room gallery — one card per room, reusing whatever image the room
+     itself already uses (real photo via panorama_url, or the same
+     procedural scene otherwise) so nothing new is invented here */
+  var galleryGrid=document.getElementById("galleryGrid");
+  ORDER.forEach(function(id){
+    var r=ROOMS[id];
+    var thumb = r.panorama_url
+      ? '<div class="room-card-thumb" style="background-image:url('+r.panorama_url+')"></div>'
+      : '<div class="room-card-thumb">'+sceneHTML(id)+'</div>';
+    var card=document.createElement("div");
+    card.className="room-card"; card.dataset.id=id;
+    card.innerHTML=thumb+'<div class="room-card-label"><span>'+r.name+'</span>'
+      +(r.view?'<span class="tag">VIEW</span>':'')+'</div>';
+    card.addEventListener("click",function(){
+      stopTour(); go(id);
+      stage.scrollIntoView({behavior:"smooth",block:"start"});
+    });
+    galleryGrid.appendChild(card);
+  });
 
   mount(current,true);
 })();
