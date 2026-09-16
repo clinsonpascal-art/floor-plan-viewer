@@ -9,6 +9,9 @@ from .providers import get_provider
 from .validation import validate_manifest
 from .plan_ingest import source_info
 from .plan_crop import room_plan_crop
+from .static_room_images import STATIC_ROOM_IMAGES
+
+STATIC_DIR = Path(__file__).resolve().parents[1] / "static"
 
 DISCLAIMER = ("AI architectural visualization generated from the developer floor plan. "
               "Furnishings illustrative; dimensions approximate and subject to change.")
@@ -34,7 +37,11 @@ def generate_unit(unit_id: str, plan: Path | None = None, staged: bool = False,
         plan_crop = room_plan_crop(plan, r)
         if plan_crop:
             (out / f"{rid}.plan.png").write_bytes(plan_crop)   # source-grounding evidence
-        img = prov.generate(prompt, settings.image_size, control)
+        static_rel = STATIC_ROOM_IMAGES.get(unit_id, {}).get(rid)
+        if static_rel:
+            img = (STATIC_DIR / static_rel).read_bytes()   # real photo override, no generation
+        else:
+            img = prov.generate(prompt, settings.image_size, control)
         (out / f"{rid}.jpg").write_bytes(img)
 
         url = f"{settings.public_base}/{unit_id}/{rid}.jpg"
