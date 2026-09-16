@@ -1,0 +1,2860 @@
+{
+  "unit": "continuum-residence-01",
+  "status": "review_required",
+  "provider": "mock",
+  "disclaimer": "AI architectural visualization generated from the developer floor plan. Furnishings illustrative; dimensions approximate and subject to change.",
+  "order": [
+    "bed3",
+    "bed2",
+    "great",
+    "kitchen",
+    "primary",
+    "pbath",
+    "bath2",
+    "bath3",
+    "powder",
+    "terrace"
+  ],
+  "rooms": {
+    "bed3": {
+      "name": "Bedroom 3",
+      "dim": "≈ 13.23′ × 9.92′",
+      "view": true,
+      "feat": "Third bedroom with terrace access and built-in storage",
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "links": [
+        {
+          "to": "bath3",
+          "label": "Bath 3"
+        },
+        {
+          "to": "great",
+          "label": "Living Room"
+        }
+      ],
+      "source_plan": {
+        "label": "BEDROOM 3",
+        "bbox_px": [
+          235,
+          275,
+          355,
+          365
+        ],
+        "polygon_px": [
+          [
+            235,
+            275
+          ],
+          [
+            355,
+            275
+          ],
+          [
+            355,
+            365
+          ],
+          [
+            235,
+            365
+          ]
+        ],
+        "plan_size_px": [
+          810,
+          490
+        ],
+        "fidelity": "annotated_visible_plan_regions_not_CAD",
+        "region_type": "interior_room"
+      },
+      "geometry": {
+        "coordinate_system": "room_local_ft",
+        "source": "uploaded-plan-region",
+        "source_fidelity": "source_shape_plus_inferred_3d_openings",
+        "dimension_provenance": "estimated_from_visible_plan_and_printed_total_area",
+        "width_ft": 13.23,
+        "depth_ft": 9.92,
+        "ceiling_ft": 11.0,
+        "boundary": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            13.23,
+            0.0
+          ],
+          [
+            13.23,
+            9.92
+          ],
+          [
+            0.0,
+            9.92
+          ]
+        ],
+        "source_polygon_px": [
+          [
+            235,
+            275
+          ],
+          [
+            355,
+            275
+          ],
+          [
+            355,
+            365
+          ],
+          [
+            235,
+            365
+          ]
+        ],
+        "source_geometry": {
+          "coordinate_system": "room_local_ft",
+          "source_fidelity": "source_shape_plus_inferred_3d_openings",
+          "boundary": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              13.23,
+              0.0
+            ],
+            [
+              13.23,
+              9.92
+            ],
+            [
+              0.0,
+              9.92
+            ]
+          ],
+          "walls": [
+            {
+              "id": "wall_01",
+              "a": [
+                0.0,
+                0.0,
+                0
+              ],
+              "b": [
+                13.23,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_02",
+              "a": [
+                13.23,
+                0.0,
+                0
+              ],
+              "b": [
+                13.23,
+                9.92,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_03",
+              "a": [
+                13.23,
+                9.92,
+                0
+              ],
+              "b": [
+                0.0,
+                9.92,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_04",
+              "a": [
+                0.0,
+                9.92,
+                0
+              ],
+              "b": [
+                0.0,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            }
+          ],
+          "source_polygon_px": [
+            [
+              235,
+              275
+            ],
+            [
+              355,
+              275
+            ],
+            [
+              355,
+              365
+            ],
+            [
+              235,
+              365
+            ]
+          ],
+          "source_bbox_px": [
+            235,
+            275,
+            355,
+            365
+          ]
+        },
+        "walls": [
+          {
+            "id": "wall_01",
+            "a": [
+              0.0,
+              0.0,
+              0
+            ],
+            "b": [
+              13.23,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_02",
+            "a": [
+              13.23,
+              0.0,
+              0
+            ],
+            "b": [
+              13.23,
+              9.92,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_03",
+            "a": [
+              13.23,
+              9.92,
+              0
+            ],
+            "b": [
+              0.0,
+              9.92,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_04",
+            "a": [
+              0.0,
+              9.92,
+              0
+            ],
+            "b": [
+              0.0,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          }
+        ],
+        "doors": [
+          {
+            "id": "door_01",
+            "type": "entry_or_room_connection",
+            "wall": "wall_north",
+            "offset_ft": 6.615,
+            "width_ft": 3.0,
+            "height_ft": 7.0,
+            "inferred": true,
+            "source_note": "opening inferred from room adjacency; exact location requires CAD/vector plan"
+          }
+        ],
+        "windows": [
+          {
+            "id": "window_01",
+            "type": "floor_to_ceiling_glass",
+            "wall": "wall_west",
+            "offset_ft": 4.96,
+            "width_ft": 7.936,
+            "sill_height_ft": 0.3,
+            "head_height_ft": 10.4,
+            "inferred": true,
+            "source_note": "glass wall inferred from visible exterior/view condition"
+          }
+        ],
+        "connections": [
+          "bath3",
+          "great"
+        ]
+      },
+      "source_plan_crop_url": "/renders/continuum-residence-01/bed3.plan.png",
+      "panorama_url": "/renders/continuum-residence-01/bed3.jpg"
+    },
+    "bed2": {
+      "name": "Bedroom 2",
+      "dim": "≈ 9.7′ × 13.34′",
+      "view": true,
+      "feat": "Bay-facing bedroom with closet and Bath 2 nearby",
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "links": [
+        {
+          "to": "bath2",
+          "label": "Bath 2"
+        },
+        {
+          "to": "great",
+          "label": "Living Room"
+        }
+      ],
+      "source_plan": {
+        "label": "BEDROOM 2",
+        "bbox_px": [
+          392,
+          155,
+          480,
+          276
+        ],
+        "polygon_px": [
+          [
+            392,
+            155
+          ],
+          [
+            480,
+            155
+          ],
+          [
+            480,
+            276
+          ],
+          [
+            392,
+            276
+          ]
+        ],
+        "plan_size_px": [
+          810,
+          490
+        ],
+        "fidelity": "annotated_visible_plan_regions_not_CAD",
+        "region_type": "interior_room"
+      },
+      "geometry": {
+        "coordinate_system": "room_local_ft",
+        "source": "uploaded-plan-region",
+        "source_fidelity": "source_shape_plus_inferred_3d_openings",
+        "dimension_provenance": "estimated_from_visible_plan_and_printed_total_area",
+        "width_ft": 9.7,
+        "depth_ft": 13.34,
+        "ceiling_ft": 11.0,
+        "boundary": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            9.7,
+            0.0
+          ],
+          [
+            9.7,
+            13.34
+          ],
+          [
+            0.0,
+            13.34
+          ]
+        ],
+        "source_polygon_px": [
+          [
+            392,
+            155
+          ],
+          [
+            480,
+            155
+          ],
+          [
+            480,
+            276
+          ],
+          [
+            392,
+            276
+          ]
+        ],
+        "source_geometry": {
+          "coordinate_system": "room_local_ft",
+          "source_fidelity": "source_shape_plus_inferred_3d_openings",
+          "boundary": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              9.7,
+              0.0
+            ],
+            [
+              9.7,
+              13.34
+            ],
+            [
+              0.0,
+              13.34
+            ]
+          ],
+          "walls": [
+            {
+              "id": "wall_01",
+              "a": [
+                0.0,
+                0.0,
+                0
+              ],
+              "b": [
+                9.7,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_02",
+              "a": [
+                9.7,
+                0.0,
+                0
+              ],
+              "b": [
+                9.7,
+                13.34,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_03",
+              "a": [
+                9.7,
+                13.34,
+                0
+              ],
+              "b": [
+                0.0,
+                13.34,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_04",
+              "a": [
+                0.0,
+                13.34,
+                0
+              ],
+              "b": [
+                0.0,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            }
+          ],
+          "source_polygon_px": [
+            [
+              392,
+              155
+            ],
+            [
+              480,
+              155
+            ],
+            [
+              480,
+              276
+            ],
+            [
+              392,
+              276
+            ]
+          ],
+          "source_bbox_px": [
+            392,
+            155,
+            480,
+            276
+          ]
+        },
+        "walls": [
+          {
+            "id": "wall_01",
+            "a": [
+              0.0,
+              0.0,
+              0
+            ],
+            "b": [
+              9.7,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_02",
+            "a": [
+              9.7,
+              0.0,
+              0
+            ],
+            "b": [
+              9.7,
+              13.34,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_03",
+            "a": [
+              9.7,
+              13.34,
+              0
+            ],
+            "b": [
+              0.0,
+              13.34,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_04",
+            "a": [
+              0.0,
+              13.34,
+              0
+            ],
+            "b": [
+              0.0,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          }
+        ],
+        "doors": [
+          {
+            "id": "door_01",
+            "type": "entry_or_room_connection",
+            "wall": "wall_north",
+            "offset_ft": 4.85,
+            "width_ft": 3.0,
+            "height_ft": 7.0,
+            "inferred": true,
+            "source_note": "opening inferred from room adjacency; exact location requires CAD/vector plan"
+          }
+        ],
+        "windows": [
+          {
+            "id": "window_01",
+            "type": "floor_to_ceiling_glass",
+            "wall": "wall_north",
+            "offset_ft": 4.85,
+            "width_ft": 7.76,
+            "sill_height_ft": 0.3,
+            "head_height_ft": 10.4,
+            "inferred": true,
+            "source_note": "glass wall inferred from visible exterior/view condition"
+          }
+        ],
+        "connections": [
+          "bath2",
+          "great"
+        ]
+      },
+      "source_plan_crop_url": "/renders/continuum-residence-01/bed2.plan.png",
+      "panorama_url": "/renders/continuum-residence-01/bed2.jpg"
+    },
+    "great": {
+      "name": "Living Room",
+      "dim": "≈ 17.42′ × 13.78′",
+      "view": true,
+      "feat": "Central living room opening toward the curved private terraces",
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "links": [
+        {
+          "to": "bed2",
+          "label": "Bedroom 2"
+        },
+        {
+          "to": "bed3",
+          "label": "Bedroom 3"
+        },
+        {
+          "to": "kitchen",
+          "label": "Kitchen"
+        },
+        {
+          "to": "primary",
+          "label": "Primary Bedroom"
+        },
+        {
+          "to": "terrace",
+          "label": "Terrace"
+        }
+      ],
+      "source_plan": {
+        "label": "LIVING ROOM",
+        "bbox_px": [
+          480,
+          155,
+          638,
+          280
+        ],
+        "polygon_px": [
+          [
+            480,
+            155
+          ],
+          [
+            638,
+            155
+          ],
+          [
+            638,
+            280
+          ],
+          [
+            480,
+            280
+          ]
+        ],
+        "plan_size_px": [
+          810,
+          490
+        ],
+        "fidelity": "annotated_visible_plan_regions_not_CAD",
+        "region_type": "interior_room"
+      },
+      "geometry": {
+        "coordinate_system": "room_local_ft",
+        "source": "uploaded-plan-region",
+        "source_fidelity": "source_shape_plus_inferred_3d_openings",
+        "dimension_provenance": "estimated_from_visible_plan_and_printed_total_area",
+        "width_ft": 17.42,
+        "depth_ft": 13.78,
+        "ceiling_ft": 11.0,
+        "boundary": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            17.42,
+            0.0
+          ],
+          [
+            17.42,
+            13.78
+          ],
+          [
+            0.0,
+            13.78
+          ]
+        ],
+        "source_polygon_px": [
+          [
+            480,
+            155
+          ],
+          [
+            638,
+            155
+          ],
+          [
+            638,
+            280
+          ],
+          [
+            480,
+            280
+          ]
+        ],
+        "source_geometry": {
+          "coordinate_system": "room_local_ft",
+          "source_fidelity": "source_shape_plus_inferred_3d_openings",
+          "boundary": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              17.42,
+              0.0
+            ],
+            [
+              17.42,
+              13.78
+            ],
+            [
+              0.0,
+              13.78
+            ]
+          ],
+          "walls": [
+            {
+              "id": "wall_01",
+              "a": [
+                0.0,
+                0.0,
+                0
+              ],
+              "b": [
+                17.42,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_02",
+              "a": [
+                17.42,
+                0.0,
+                0
+              ],
+              "b": [
+                17.42,
+                13.78,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_03",
+              "a": [
+                17.42,
+                13.78,
+                0
+              ],
+              "b": [
+                0.0,
+                13.78,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_04",
+              "a": [
+                0.0,
+                13.78,
+                0
+              ],
+              "b": [
+                0.0,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            }
+          ],
+          "source_polygon_px": [
+            [
+              480,
+              155
+            ],
+            [
+              638,
+              155
+            ],
+            [
+              638,
+              280
+            ],
+            [
+              480,
+              280
+            ]
+          ],
+          "source_bbox_px": [
+            480,
+            155,
+            638,
+            280
+          ]
+        },
+        "walls": [
+          {
+            "id": "wall_01",
+            "a": [
+              0.0,
+              0.0,
+              0
+            ],
+            "b": [
+              17.42,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_02",
+            "a": [
+              17.42,
+              0.0,
+              0
+            ],
+            "b": [
+              17.42,
+              13.78,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_03",
+            "a": [
+              17.42,
+              13.78,
+              0
+            ],
+            "b": [
+              0.0,
+              13.78,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_04",
+            "a": [
+              0.0,
+              13.78,
+              0
+            ],
+            "b": [
+              0.0,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          }
+        ],
+        "doors": [
+          {
+            "id": "door_01",
+            "type": "entry_or_room_connection",
+            "wall": "wall_north",
+            "offset_ft": 8.71,
+            "width_ft": 3.0,
+            "height_ft": 7.0,
+            "inferred": true,
+            "source_note": "opening inferred from room adjacency; exact location requires CAD/vector plan"
+          }
+        ],
+        "windows": [
+          {
+            "id": "window_01",
+            "type": "floor_to_ceiling_glass",
+            "wall": "wall_north",
+            "offset_ft": 8.71,
+            "width_ft": 13.936,
+            "sill_height_ft": 0.3,
+            "head_height_ft": 10.4,
+            "inferred": true,
+            "source_note": "glass wall inferred from visible exterior/view condition"
+          }
+        ],
+        "connections": [
+          "bed2",
+          "bed3",
+          "kitchen",
+          "primary",
+          "terrace"
+        ]
+      },
+      "source_plan_crop_url": "/renders/continuum-residence-01/great.plan.png",
+      "panorama_url": "/renders/continuum-residence-01/great.jpg"
+    },
+    "kitchen": {
+      "name": "Kitchen",
+      "dim": "≈ 13.78′ × 8.27′",
+      "view": false,
+      "feat": "Central kitchen with island, cabinetry and appliance wall",
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "links": [
+        {
+          "to": "great",
+          "label": "Living Room"
+        },
+        {
+          "to": "primary",
+          "label": "Primary Bedroom"
+        }
+      ],
+      "source_plan": {
+        "label": "KITCHEN",
+        "bbox_px": [
+          515,
+          280,
+          640,
+          355
+        ],
+        "polygon_px": [
+          [
+            515,
+            280
+          ],
+          [
+            640,
+            280
+          ],
+          [
+            640,
+            355
+          ],
+          [
+            515,
+            355
+          ]
+        ],
+        "plan_size_px": [
+          810,
+          490
+        ],
+        "fidelity": "annotated_visible_plan_regions_not_CAD",
+        "region_type": "interior_room"
+      },
+      "geometry": {
+        "coordinate_system": "room_local_ft",
+        "source": "uploaded-plan-region",
+        "source_fidelity": "source_shape_plus_inferred_3d_openings",
+        "dimension_provenance": "estimated_from_visible_plan_and_printed_total_area",
+        "width_ft": 13.78,
+        "depth_ft": 8.27,
+        "ceiling_ft": 11.0,
+        "boundary": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            13.78,
+            0.0
+          ],
+          [
+            13.78,
+            8.27
+          ],
+          [
+            0.0,
+            8.27
+          ]
+        ],
+        "source_polygon_px": [
+          [
+            515,
+            280
+          ],
+          [
+            640,
+            280
+          ],
+          [
+            640,
+            355
+          ],
+          [
+            515,
+            355
+          ]
+        ],
+        "source_geometry": {
+          "coordinate_system": "room_local_ft",
+          "source_fidelity": "source_shape_plus_inferred_3d_openings",
+          "boundary": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              13.78,
+              0.0
+            ],
+            [
+              13.78,
+              8.27
+            ],
+            [
+              0.0,
+              8.27
+            ]
+          ],
+          "walls": [
+            {
+              "id": "wall_01",
+              "a": [
+                0.0,
+                0.0,
+                0
+              ],
+              "b": [
+                13.78,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_02",
+              "a": [
+                13.78,
+                0.0,
+                0
+              ],
+              "b": [
+                13.78,
+                8.27,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_03",
+              "a": [
+                13.78,
+                8.27,
+                0
+              ],
+              "b": [
+                0.0,
+                8.27,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_04",
+              "a": [
+                0.0,
+                8.27,
+                0
+              ],
+              "b": [
+                0.0,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            }
+          ],
+          "source_polygon_px": [
+            [
+              515,
+              280
+            ],
+            [
+              640,
+              280
+            ],
+            [
+              640,
+              355
+            ],
+            [
+              515,
+              355
+            ]
+          ],
+          "source_bbox_px": [
+            515,
+            280,
+            640,
+            355
+          ]
+        },
+        "walls": [
+          {
+            "id": "wall_01",
+            "a": [
+              0.0,
+              0.0,
+              0
+            ],
+            "b": [
+              13.78,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_02",
+            "a": [
+              13.78,
+              0.0,
+              0
+            ],
+            "b": [
+              13.78,
+              8.27,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_03",
+            "a": [
+              13.78,
+              8.27,
+              0
+            ],
+            "b": [
+              0.0,
+              8.27,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_04",
+            "a": [
+              0.0,
+              8.27,
+              0
+            ],
+            "b": [
+              0.0,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          }
+        ],
+        "doors": [
+          {
+            "id": "door_01",
+            "type": "entry_or_room_connection",
+            "wall": "wall_north",
+            "offset_ft": 6.89,
+            "width_ft": 3.0,
+            "height_ft": 7.0,
+            "inferred": true,
+            "source_note": "opening inferred from room adjacency; exact location requires CAD/vector plan"
+          }
+        ],
+        "windows": [],
+        "connections": [
+          "great",
+          "primary"
+        ]
+      },
+      "source_plan_crop_url": "/renders/continuum-residence-01/kitchen.plan.png",
+      "panorama_url": "/renders/continuum-residence-01/kitchen.jpg"
+    },
+    "primary": {
+      "name": "Primary Bedroom",
+      "dim": "≈ 17.64′ × 12.68′",
+      "view": true,
+      "feat": "Bay-facing primary suite with walk-in closet and direct Primary Bath connection",
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "links": [
+        {
+          "to": "great",
+          "label": "Living Room"
+        },
+        {
+          "to": "pbath",
+          "label": "Primary Bath"
+        }
+      ],
+      "source_plan": {
+        "label": "PRIMARY BEDROOM",
+        "bbox_px": [
+          640,
+          275,
+          800,
+          390
+        ],
+        "polygon_px": [
+          [
+            640,
+            275
+          ],
+          [
+            800,
+            275
+          ],
+          [
+            800,
+            390
+          ],
+          [
+            640,
+            390
+          ]
+        ],
+        "plan_size_px": [
+          810,
+          490
+        ],
+        "fidelity": "annotated_visible_plan_regions_not_CAD",
+        "region_type": "interior_room"
+      },
+      "geometry": {
+        "coordinate_system": "room_local_ft",
+        "source": "uploaded-plan-region",
+        "source_fidelity": "source_shape_plus_inferred_3d_openings",
+        "dimension_provenance": "estimated_from_visible_plan_and_printed_total_area",
+        "width_ft": 17.64,
+        "depth_ft": 12.68,
+        "ceiling_ft": 11.0,
+        "boundary": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            17.64,
+            0.0
+          ],
+          [
+            17.64,
+            12.68
+          ],
+          [
+            0.0,
+            12.68
+          ]
+        ],
+        "source_polygon_px": [
+          [
+            640,
+            275
+          ],
+          [
+            800,
+            275
+          ],
+          [
+            800,
+            390
+          ],
+          [
+            640,
+            390
+          ]
+        ],
+        "source_geometry": {
+          "coordinate_system": "room_local_ft",
+          "source_fidelity": "source_shape_plus_inferred_3d_openings",
+          "boundary": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              17.64,
+              0.0
+            ],
+            [
+              17.64,
+              12.68
+            ],
+            [
+              0.0,
+              12.68
+            ]
+          ],
+          "walls": [
+            {
+              "id": "wall_01",
+              "a": [
+                0.0,
+                0.0,
+                0
+              ],
+              "b": [
+                17.64,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_02",
+              "a": [
+                17.64,
+                0.0,
+                0
+              ],
+              "b": [
+                17.64,
+                12.68,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_03",
+              "a": [
+                17.64,
+                12.68,
+                0
+              ],
+              "b": [
+                0.0,
+                12.68,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_04",
+              "a": [
+                0.0,
+                12.68,
+                0
+              ],
+              "b": [
+                0.0,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            }
+          ],
+          "source_polygon_px": [
+            [
+              640,
+              275
+            ],
+            [
+              800,
+              275
+            ],
+            [
+              800,
+              390
+            ],
+            [
+              640,
+              390
+            ]
+          ],
+          "source_bbox_px": [
+            640,
+            275,
+            800,
+            390
+          ]
+        },
+        "walls": [
+          {
+            "id": "wall_01",
+            "a": [
+              0.0,
+              0.0,
+              0
+            ],
+            "b": [
+              17.64,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_02",
+            "a": [
+              17.64,
+              0.0,
+              0
+            ],
+            "b": [
+              17.64,
+              12.68,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_03",
+            "a": [
+              17.64,
+              12.68,
+              0
+            ],
+            "b": [
+              0.0,
+              12.68,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_04",
+            "a": [
+              0.0,
+              12.68,
+              0
+            ],
+            "b": [
+              0.0,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          }
+        ],
+        "doors": [
+          {
+            "id": "door_01",
+            "type": "entry_or_room_connection",
+            "wall": "wall_north",
+            "offset_ft": 8.82,
+            "width_ft": 3.0,
+            "height_ft": 7.0,
+            "inferred": true,
+            "source_note": "opening inferred from room adjacency; exact location requires CAD/vector plan"
+          }
+        ],
+        "windows": [
+          {
+            "id": "window_01",
+            "type": "floor_to_ceiling_glass",
+            "wall": "wall_east",
+            "offset_ft": 6.34,
+            "width_ft": 10.144,
+            "sill_height_ft": 0.3,
+            "head_height_ft": 10.4,
+            "inferred": true,
+            "source_note": "glass wall inferred from visible exterior/view condition"
+          }
+        ],
+        "connections": [
+          "great",
+          "pbath"
+        ]
+      },
+      "source_plan_crop_url": "/renders/continuum-residence-01/primary.plan.png",
+      "panorama_url": "/renders/continuum-residence-01/primary.jpg"
+    },
+    "pbath": {
+      "name": "Primary Bath",
+      "dim": "≈ 22.05′ × 7.5′",
+      "view": false,
+      "feat": "Primary en-suite bath with dual vanity, tub and shower zone",
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "links": [
+        {
+          "to": "primary",
+          "label": "Primary Bedroom"
+        }
+      ],
+      "source_plan": {
+        "label": "PRIMARY BATH",
+        "bbox_px": [
+          600,
+          390,
+          800,
+          458
+        ],
+        "polygon_px": [
+          [
+            600,
+            390
+          ],
+          [
+            800,
+            390
+          ],
+          [
+            800,
+            458
+          ],
+          [
+            600,
+            458
+          ]
+        ],
+        "plan_size_px": [
+          810,
+          490
+        ],
+        "fidelity": "annotated_visible_plan_regions_not_CAD",
+        "region_type": "interior_room"
+      },
+      "geometry": {
+        "coordinate_system": "room_local_ft",
+        "source": "uploaded-plan-region",
+        "source_fidelity": "source_shape_plus_inferred_3d_openings",
+        "dimension_provenance": "estimated_from_visible_plan_and_printed_total_area",
+        "width_ft": 22.05,
+        "depth_ft": 7.5,
+        "ceiling_ft": 11.0,
+        "boundary": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            22.05,
+            0.0
+          ],
+          [
+            22.05,
+            7.5
+          ],
+          [
+            0.0,
+            7.5
+          ]
+        ],
+        "source_polygon_px": [
+          [
+            600,
+            390
+          ],
+          [
+            800,
+            390
+          ],
+          [
+            800,
+            458
+          ],
+          [
+            600,
+            458
+          ]
+        ],
+        "source_geometry": {
+          "coordinate_system": "room_local_ft",
+          "source_fidelity": "source_shape_plus_inferred_3d_openings",
+          "boundary": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              22.05,
+              0.0
+            ],
+            [
+              22.05,
+              7.5
+            ],
+            [
+              0.0,
+              7.5
+            ]
+          ],
+          "walls": [
+            {
+              "id": "wall_01",
+              "a": [
+                0.0,
+                0.0,
+                0
+              ],
+              "b": [
+                22.05,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_02",
+              "a": [
+                22.05,
+                0.0,
+                0
+              ],
+              "b": [
+                22.05,
+                7.5,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_03",
+              "a": [
+                22.05,
+                7.5,
+                0
+              ],
+              "b": [
+                0.0,
+                7.5,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_04",
+              "a": [
+                0.0,
+                7.5,
+                0
+              ],
+              "b": [
+                0.0,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            }
+          ],
+          "source_polygon_px": [
+            [
+              600,
+              390
+            ],
+            [
+              800,
+              390
+            ],
+            [
+              800,
+              458
+            ],
+            [
+              600,
+              458
+            ]
+          ],
+          "source_bbox_px": [
+            600,
+            390,
+            800,
+            458
+          ]
+        },
+        "walls": [
+          {
+            "id": "wall_01",
+            "a": [
+              0.0,
+              0.0,
+              0
+            ],
+            "b": [
+              22.05,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_02",
+            "a": [
+              22.05,
+              0.0,
+              0
+            ],
+            "b": [
+              22.05,
+              7.5,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_03",
+            "a": [
+              22.05,
+              7.5,
+              0
+            ],
+            "b": [
+              0.0,
+              7.5,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_04",
+            "a": [
+              0.0,
+              7.5,
+              0
+            ],
+            "b": [
+              0.0,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          }
+        ],
+        "doors": [
+          {
+            "id": "door_01",
+            "type": "entry_or_room_connection",
+            "wall": "wall_north",
+            "offset_ft": 11.025,
+            "width_ft": 3.0,
+            "height_ft": 7.0,
+            "inferred": true,
+            "source_note": "opening inferred from room adjacency; exact location requires CAD/vector plan"
+          }
+        ],
+        "windows": [],
+        "connections": [
+          "primary"
+        ]
+      },
+      "source_plan_crop_url": "/renders/continuum-residence-01/pbath.plan.png",
+      "panorama_url": "/renders/continuum-residence-01/pbath.jpg"
+    },
+    "bath2": {
+      "name": "Bath 2",
+      "dim": "≈ 7.16′ × 8.82′",
+      "view": false,
+      "feat": "En-suite / bedroom bath serving Bedroom 2",
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "links": [
+        {
+          "to": "bed2",
+          "label": "Bedroom 2"
+        }
+      ],
+      "source_plan": {
+        "label": "BATH 2",
+        "bbox_px": [
+          450,
+          275,
+          515,
+          355
+        ],
+        "polygon_px": [
+          [
+            450,
+            275
+          ],
+          [
+            515,
+            275
+          ],
+          [
+            515,
+            355
+          ],
+          [
+            450,
+            355
+          ]
+        ],
+        "plan_size_px": [
+          810,
+          490
+        ],
+        "fidelity": "annotated_visible_plan_regions_not_CAD",
+        "region_type": "interior_room"
+      },
+      "geometry": {
+        "coordinate_system": "room_local_ft",
+        "source": "uploaded-plan-region",
+        "source_fidelity": "source_shape_plus_inferred_3d_openings",
+        "dimension_provenance": "estimated_from_visible_plan_and_printed_total_area",
+        "width_ft": 7.16,
+        "depth_ft": 8.82,
+        "ceiling_ft": 11.0,
+        "boundary": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            7.16,
+            0.0
+          ],
+          [
+            7.16,
+            8.82
+          ],
+          [
+            0.0,
+            8.82
+          ]
+        ],
+        "source_polygon_px": [
+          [
+            450,
+            275
+          ],
+          [
+            515,
+            275
+          ],
+          [
+            515,
+            355
+          ],
+          [
+            450,
+            355
+          ]
+        ],
+        "source_geometry": {
+          "coordinate_system": "room_local_ft",
+          "source_fidelity": "source_shape_plus_inferred_3d_openings",
+          "boundary": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              7.16,
+              0.0
+            ],
+            [
+              7.16,
+              8.82
+            ],
+            [
+              0.0,
+              8.82
+            ]
+          ],
+          "walls": [
+            {
+              "id": "wall_01",
+              "a": [
+                0.0,
+                0.0,
+                0
+              ],
+              "b": [
+                7.16,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_02",
+              "a": [
+                7.16,
+                0.0,
+                0
+              ],
+              "b": [
+                7.16,
+                8.82,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_03",
+              "a": [
+                7.16,
+                8.82,
+                0
+              ],
+              "b": [
+                0.0,
+                8.82,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_04",
+              "a": [
+                0.0,
+                8.82,
+                0
+              ],
+              "b": [
+                0.0,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            }
+          ],
+          "source_polygon_px": [
+            [
+              450,
+              275
+            ],
+            [
+              515,
+              275
+            ],
+            [
+              515,
+              355
+            ],
+            [
+              450,
+              355
+            ]
+          ],
+          "source_bbox_px": [
+            450,
+            275,
+            515,
+            355
+          ]
+        },
+        "walls": [
+          {
+            "id": "wall_01",
+            "a": [
+              0.0,
+              0.0,
+              0
+            ],
+            "b": [
+              7.16,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_02",
+            "a": [
+              7.16,
+              0.0,
+              0
+            ],
+            "b": [
+              7.16,
+              8.82,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_03",
+            "a": [
+              7.16,
+              8.82,
+              0
+            ],
+            "b": [
+              0.0,
+              8.82,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_04",
+            "a": [
+              0.0,
+              8.82,
+              0
+            ],
+            "b": [
+              0.0,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          }
+        ],
+        "doors": [
+          {
+            "id": "door_01",
+            "type": "entry_or_room_connection",
+            "wall": "wall_north",
+            "offset_ft": 3.58,
+            "width_ft": 3.0,
+            "height_ft": 7.0,
+            "inferred": true,
+            "source_note": "opening inferred from room adjacency; exact location requires CAD/vector plan"
+          }
+        ],
+        "windows": [],
+        "connections": [
+          "bed2"
+        ]
+      },
+      "source_plan_crop_url": "/renders/continuum-residence-01/bath2.plan.png",
+      "panorama_url": "/renders/continuum-residence-01/bath2.jpg"
+    },
+    "bath3": {
+      "name": "Bath 3",
+      "dim": "≈ 6.61′ × 8.27′",
+      "view": false,
+      "feat": "Bath serving Bedroom 3",
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "links": [
+        {
+          "to": "bed3",
+          "label": "Bedroom 3"
+        }
+      ],
+      "source_plan": {
+        "label": "BATH 3",
+        "bbox_px": [
+          395,
+          350,
+          455,
+          425
+        ],
+        "polygon_px": [
+          [
+            395,
+            350
+          ],
+          [
+            455,
+            350
+          ],
+          [
+            455,
+            425
+          ],
+          [
+            395,
+            425
+          ]
+        ],
+        "plan_size_px": [
+          810,
+          490
+        ],
+        "fidelity": "annotated_visible_plan_regions_not_CAD",
+        "region_type": "interior_room"
+      },
+      "geometry": {
+        "coordinate_system": "room_local_ft",
+        "source": "uploaded-plan-region",
+        "source_fidelity": "source_shape_plus_inferred_3d_openings",
+        "dimension_provenance": "estimated_from_visible_plan_and_printed_total_area",
+        "width_ft": 6.61,
+        "depth_ft": 8.27,
+        "ceiling_ft": 11.0,
+        "boundary": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            6.61,
+            0.0
+          ],
+          [
+            6.61,
+            8.27
+          ],
+          [
+            0.0,
+            8.27
+          ]
+        ],
+        "source_polygon_px": [
+          [
+            395,
+            350
+          ],
+          [
+            455,
+            350
+          ],
+          [
+            455,
+            425
+          ],
+          [
+            395,
+            425
+          ]
+        ],
+        "source_geometry": {
+          "coordinate_system": "room_local_ft",
+          "source_fidelity": "source_shape_plus_inferred_3d_openings",
+          "boundary": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              6.61,
+              0.0
+            ],
+            [
+              6.61,
+              8.27
+            ],
+            [
+              0.0,
+              8.27
+            ]
+          ],
+          "walls": [
+            {
+              "id": "wall_01",
+              "a": [
+                0.0,
+                0.0,
+                0
+              ],
+              "b": [
+                6.61,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_02",
+              "a": [
+                6.61,
+                0.0,
+                0
+              ],
+              "b": [
+                6.61,
+                8.27,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_03",
+              "a": [
+                6.61,
+                8.27,
+                0
+              ],
+              "b": [
+                0.0,
+                8.27,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_04",
+              "a": [
+                0.0,
+                8.27,
+                0
+              ],
+              "b": [
+                0.0,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            }
+          ],
+          "source_polygon_px": [
+            [
+              395,
+              350
+            ],
+            [
+              455,
+              350
+            ],
+            [
+              455,
+              425
+            ],
+            [
+              395,
+              425
+            ]
+          ],
+          "source_bbox_px": [
+            395,
+            350,
+            455,
+            425
+          ]
+        },
+        "walls": [
+          {
+            "id": "wall_01",
+            "a": [
+              0.0,
+              0.0,
+              0
+            ],
+            "b": [
+              6.61,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_02",
+            "a": [
+              6.61,
+              0.0,
+              0
+            ],
+            "b": [
+              6.61,
+              8.27,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_03",
+            "a": [
+              6.61,
+              8.27,
+              0
+            ],
+            "b": [
+              0.0,
+              8.27,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_04",
+            "a": [
+              0.0,
+              8.27,
+              0
+            ],
+            "b": [
+              0.0,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          }
+        ],
+        "doors": [
+          {
+            "id": "door_01",
+            "type": "entry_or_room_connection",
+            "wall": "wall_north",
+            "offset_ft": 3.305,
+            "width_ft": 3.0,
+            "height_ft": 7.0,
+            "inferred": true,
+            "source_note": "opening inferred from room adjacency; exact location requires CAD/vector plan"
+          }
+        ],
+        "windows": [],
+        "connections": [
+          "bed3"
+        ]
+      },
+      "source_plan_crop_url": "/renders/continuum-residence-01/bath3.plan.png",
+      "panorama_url": "/renders/continuum-residence-01/bath3.jpg"
+    },
+    "powder": {
+      "name": "Powder Room",
+      "dim": "≈ 6.61′ × 8.27′",
+      "view": false,
+      "feat": "Guest powder room positioned along the interior circulation zone",
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "links": [
+        {
+          "to": "great",
+          "label": "Living Room"
+        }
+      ],
+      "source_plan": {
+        "label": "POWDER ROOM",
+        "bbox_px": [
+          455,
+          370,
+          515,
+          445
+        ],
+        "polygon_px": [
+          [
+            455,
+            370
+          ],
+          [
+            515,
+            370
+          ],
+          [
+            515,
+            445
+          ],
+          [
+            455,
+            445
+          ]
+        ],
+        "plan_size_px": [
+          810,
+          490
+        ],
+        "fidelity": "annotated_visible_plan_regions_not_CAD",
+        "region_type": "interior_room"
+      },
+      "geometry": {
+        "coordinate_system": "room_local_ft",
+        "source": "uploaded-plan-region",
+        "source_fidelity": "source_shape_plus_inferred_3d_openings",
+        "dimension_provenance": "estimated_from_visible_plan_and_printed_total_area",
+        "width_ft": 6.61,
+        "depth_ft": 8.27,
+        "ceiling_ft": 11.0,
+        "boundary": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            6.61,
+            0.0
+          ],
+          [
+            6.61,
+            8.27
+          ],
+          [
+            0.0,
+            8.27
+          ]
+        ],
+        "source_polygon_px": [
+          [
+            455,
+            370
+          ],
+          [
+            515,
+            370
+          ],
+          [
+            515,
+            445
+          ],
+          [
+            455,
+            445
+          ]
+        ],
+        "source_geometry": {
+          "coordinate_system": "room_local_ft",
+          "source_fidelity": "source_shape_plus_inferred_3d_openings",
+          "boundary": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              6.61,
+              0.0
+            ],
+            [
+              6.61,
+              8.27
+            ],
+            [
+              0.0,
+              8.27
+            ]
+          ],
+          "walls": [
+            {
+              "id": "wall_01",
+              "a": [
+                0.0,
+                0.0,
+                0
+              ],
+              "b": [
+                6.61,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_02",
+              "a": [
+                6.61,
+                0.0,
+                0
+              ],
+              "b": [
+                6.61,
+                8.27,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_03",
+              "a": [
+                6.61,
+                8.27,
+                0
+              ],
+              "b": [
+                0.0,
+                8.27,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            },
+            {
+              "id": "wall_04",
+              "a": [
+                0.0,
+                8.27,
+                0
+              ],
+              "b": [
+                0.0,
+                0.0,
+                0
+              ],
+              "height_ft": 11.0,
+              "source": "annotated_plan_polygon"
+            }
+          ],
+          "source_polygon_px": [
+            [
+              455,
+              370
+            ],
+            [
+              515,
+              370
+            ],
+            [
+              515,
+              445
+            ],
+            [
+              455,
+              445
+            ]
+          ],
+          "source_bbox_px": [
+            455,
+            370,
+            515,
+            445
+          ]
+        },
+        "walls": [
+          {
+            "id": "wall_01",
+            "a": [
+              0.0,
+              0.0,
+              0
+            ],
+            "b": [
+              6.61,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_02",
+            "a": [
+              6.61,
+              0.0,
+              0
+            ],
+            "b": [
+              6.61,
+              8.27,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_03",
+            "a": [
+              6.61,
+              8.27,
+              0
+            ],
+            "b": [
+              0.0,
+              8.27,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          },
+          {
+            "id": "wall_04",
+            "a": [
+              0.0,
+              8.27,
+              0
+            ],
+            "b": [
+              0.0,
+              0.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "annotated_plan_polygon"
+          }
+        ],
+        "doors": [
+          {
+            "id": "door_01",
+            "type": "entry_or_room_connection",
+            "wall": "wall_north",
+            "offset_ft": 3.305,
+            "width_ft": 3.0,
+            "height_ft": 7.0,
+            "inferred": true,
+            "source_note": "opening inferred from room adjacency; exact location requires CAD/vector plan"
+          }
+        ],
+        "windows": [],
+        "connections": [
+          "great"
+        ]
+      },
+      "source_plan_crop_url": "/renders/continuum-residence-01/powder.plan.png",
+      "panorama_url": "/renders/continuum-residence-01/powder.jpg"
+    },
+    "terrace": {
+      "name": "Private Terrace",
+      "dim": "Approximate terrace footprint from plan",
+      "view": true,
+      "feat": "Large private outdoor terrace wrapping the curved residence edge",
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "links": [
+        {
+          "to": "great",
+          "label": "Living Room"
+        }
+      ],
+      "source_plan": {
+        "label": "TERRACES A/B/C",
+        "bbox_px": [
+          220,
+          95,
+          800,
+          275
+        ],
+        "polygon_px": null,
+        "plan_size_px": [
+          810,
+          490
+        ],
+        "fidelity": "annotated_visible_plan_regions_not_CAD",
+        "region_type": "terrace"
+      },
+      "geometry": {
+        "coordinate_system": "room_local_ft",
+        "source": "uploaded-plan-region",
+        "source_fidelity": "source_shape_plus_inferred_3d_openings",
+        "dimension_provenance": "visible_plan_region_only",
+        "width_ft": 12.0,
+        "depth_ft": 14.0,
+        "ceiling_ft": 11.0,
+        "boundary": [
+          [
+            0,
+            0
+          ],
+          [
+            12.0,
+            0
+          ],
+          [
+            12.0,
+            14.0
+          ],
+          [
+            0,
+            14.0
+          ]
+        ],
+        "source_polygon_px": [
+          [
+            390,
+            95
+          ],
+          [
+            800,
+            95
+          ],
+          [
+            800,
+            275
+          ],
+          [
+            640,
+            275
+          ],
+          [
+            640,
+            155
+          ],
+          [
+            390,
+            155
+          ]
+        ],
+        "source_geometry": null,
+        "walls": [
+          {
+            "id": "wall_north",
+            "a": [
+              0,
+              0,
+              0
+            ],
+            "b": [
+              12.0,
+              0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "inferred_rectangle"
+          },
+          {
+            "id": "wall_east",
+            "a": [
+              12.0,
+              0,
+              0
+            ],
+            "b": [
+              12.0,
+              14.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "inferred_rectangle"
+          },
+          {
+            "id": "wall_south",
+            "a": [
+              12.0,
+              14.0,
+              0
+            ],
+            "b": [
+              0,
+              14.0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "inferred_rectangle"
+          },
+          {
+            "id": "wall_west",
+            "a": [
+              0,
+              14.0,
+              0
+            ],
+            "b": [
+              0,
+              0,
+              0
+            ],
+            "height_ft": 11.0,
+            "source": "inferred_rectangle"
+          }
+        ],
+        "doors": [
+          {
+            "id": "door_01",
+            "type": "entry_or_room_connection",
+            "wall": "wall_north",
+            "offset_ft": 6.0,
+            "width_ft": 3.0,
+            "height_ft": 7.0,
+            "inferred": true,
+            "source_note": "opening inferred from room adjacency; exact location requires CAD/vector plan"
+          }
+        ],
+        "windows": [
+          {
+            "id": "window_01",
+            "type": "floor_to_ceiling_glass",
+            "wall": "wall_south",
+            "offset_ft": 6.0,
+            "width_ft": 9.6,
+            "sill_height_ft": 0.3,
+            "head_height_ft": 10.4,
+            "inferred": true,
+            "source_note": "glass wall inferred from visible exterior/view condition"
+          }
+        ],
+        "connections": [
+          "great"
+        ]
+      },
+      "source_plan_crop_url": "/renders/continuum-residence-01/terrace.plan.png",
+      "panorama_url": "/renders/continuum-residence-01/terrace.jpg"
+    }
+  },
+  "source_plan": {
+    "type": "uploaded_floor_plan_screenshot",
+    "file": "source_continuum_residence_01.jpg",
+    "plan_size_px": [
+      810,
+      490
+    ],
+    "summary": {
+      "building": "CONTINUUM CLUB & RESIDENCES",
+      "residence": "Tower Residence 01",
+      "floors": "7-23",
+      "bedrooms": 3,
+      "baths": "3.5",
+      "interior_sf": 2080,
+      "exterior_sf": 1000,
+      "total_sf": 3080
+    },
+    "fidelity": "annotated_visible_plan_regions_not_CAD"
+  },
+  "validation": {
+    "status": "pass",
+    "errors": [],
+    "warnings": [
+      "bed3: 3D shell geometry is still inferred; source-plan region is mapped",
+      "bed2: 3D shell geometry is still inferred; source-plan region is mapped",
+      "great: 3D shell geometry is still inferred; source-plan region is mapped",
+      "kitchen: 3D shell geometry is still inferred; source-plan region is mapped",
+      "primary: 3D shell geometry is still inferred; source-plan region is mapped",
+      "pbath: 3D shell geometry is still inferred; source-plan region is mapped",
+      "bath2: 3D shell geometry is still inferred; source-plan region is mapped",
+      "bath3: 3D shell geometry is still inferred; source-plan region is mapped",
+      "powder: 3D shell geometry is still inferred; source-plan region is mapped",
+      "terrace: 3D shell geometry is still inferred; source-plan region is mapped"
+    ],
+    "visual_floorplan_match": "manual_review_required"
+  }
+}

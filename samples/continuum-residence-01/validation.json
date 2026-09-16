@@ -1,0 +1,17 @@
+{
+  "status": "pass",
+  "errors": [],
+  "warnings": [
+    "bed3: 3D shell geometry is still inferred; source-plan region is mapped",
+    "bed2: 3D shell geometry is still inferred; source-plan region is mapped",
+    "great: 3D shell geometry is still inferred; source-plan region is mapped",
+    "kitchen: 3D shell geometry is still inferred; source-plan region is mapped",
+    "primary: 3D shell geometry is still inferred; source-plan region is mapped",
+    "pbath: 3D shell geometry is still inferred; source-plan region is mapped",
+    "bath2: 3D shell geometry is still inferred; source-plan region is mapped",
+    "bath3: 3D shell geometry is still inferred; source-plan region is mapped",
+    "powder: 3D shell geometry is still inferred; source-plan region is mapped",
+    "terrace: 3D shell geometry is still inferred; source-plan region is mapped"
+  ],
+  "visual_floorplan_match": "manual_review_required"
+}
