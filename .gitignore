@@ -1,0 +1,17 @@
+.env
+*.env
+!.env.example
+
+# --- generated outputs / temporary files (category D) ---
+renders*/
+*.sqlite3
+__pycache__/
+.pytest_cache/
+backend/openai_test.jpg
+
+# --- old zip/export/backup snapshots (category E) ---
+LUXE_API_CODE.txt
+LUXE_API_CODE_DELIVERY.zip
+LUXE_API_CURRENT.zip
+LUXE_CURRENT_PROJECT.zip
+render_search.txt
