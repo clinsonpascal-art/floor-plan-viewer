@@ -17,7 +17,10 @@ def test_end_to_end():
     assert client.get("/health").json()["ok"] is True
 
     jid = client.post("/units/residence-a/generate", data={"staged": "false"}).json()["job_id"]
-    for _ in range(60):
+    # 9 rooms on the mock provider can take >40s on a slower/shared machine
+    # (measured ~46s standalone) - give this real headroom rather than a
+    # tight timeout that flakes independent of any actual regression.
+    for _ in range(300):
         j = client.get(f"/jobs/{jid}").json()
         if j["status"] in ("done", "error"):
             break

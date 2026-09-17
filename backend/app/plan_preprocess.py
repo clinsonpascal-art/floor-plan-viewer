@@ -59,7 +59,12 @@ def preprocess(image_path: Path, binarize_method: str = "otsu") -> PreprocessRes
     mask = _binarize(denoised, binarize_method)  # type: ignore[arg-type]
 
     angle = _deskew_angle_deg(mask)
-    if abs(angle) < 0.3:
+    if abs(angle) < 2.0:
+        # Sub-2-degree histogram peaks are noise (e.g. a curved door-swing arc
+        # or furniture icon skewing the Hough angle vote slightly off zero),
+        # not a real scan/photo skew - and rotating for one just adds
+        # interpolation artifacts near the image border. A genuinely skewed
+        # upload produces a much larger, clearer peak.
         angle = 0.0
         gray_up, mask_up = denoised, mask
     else:

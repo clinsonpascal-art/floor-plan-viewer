@@ -12,10 +12,25 @@ from __future__ import annotations
 import math
 import uuid
 
-from shapely.geometry import LineString, Point
+from shapely.geometry import LineString
 from shapely.ops import polygonize, unary_union
 
 from .plan_geom_types import RoomPolygon, WallSegment
+
+
+def _point_segment_distance(px: float, py: float, ax: float, ay: float, bx: float, by: float) -> float:
+    """Plain-python point-to-segment distance, used in place of building a
+    shapely LineString/Point per candidate wall - this runs O(rooms *
+    vertices * walls) times, and shapely object construction overhead
+    dominates the cost at real-plan wall counts (profiled at ~2s alone on
+    the Continuum sample)."""
+    dx, dy = bx - ax, by - ay
+    length2 = dx * dx + dy * dy
+    if length2 < 1e-12:
+        return math.hypot(px - ax, py - ay)
+    t = max(0.0, min(1.0, ((px - ax) * dx + (py - ay) * dy) / length2))
+    cx, cy = ax + t * dx, ay + t * dy
+    return math.hypot(px - cx, py - cy)
 
 
 def _snap_endpoints(walls: list[WallSegment], tol_px: float) -> list[LineString]:
@@ -105,8 +120,7 @@ def segment(walls: list[WallSegment], min_room_area_px2: float, rectilinear_snap
             mid = ((p0[0] + p1[0]) / 2.0, (p0[1] + p1[1]) / 2.0)
             best_wall, best_dist = None, float("inf")
             for w in walls:
-                seg = LineString([w.a_px, w.b_px])
-                d = seg.distance(Point(mid))
+                d = _point_segment_distance(mid[0], mid[1], w.a_px[0], w.a_px[1], w.b_px[0], w.b_px[1])
                 if d < best_dist:
                     best_dist, best_wall = d, w
             wall_ids.append(best_wall.id if best_wall else "")

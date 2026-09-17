@@ -144,7 +144,7 @@ def get_rooms(unit_id: str, plan: Path | None, provider: str, only: list | None 
         for x, y in item.get("polygon_norm") or []:
             polygon.append([round(max(0, min(iw, x*iw))), round(max(0, min(ih, y*ih)))])
         r = {
-            "id": rid, "name": item["name"],
+            "id": rid, "name": item["name"], "room_type": item.get("room_type", "unknown"),
             "width_ft": item.get("width_ft"), "length_ft": item.get("length_ft"),
             "dim": (f"{item['width_ft']:g}′ × {item['length_ft']:g}′" if item.get("width_ft") and item.get("length_ft") else "Dimension not available"),
             "dimension_source": item.get("dimension_source", "not_available"),

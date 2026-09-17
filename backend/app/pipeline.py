@@ -30,7 +30,7 @@ def generate_unit(unit_id: str, plan: Path | None = None, staged: bool = False,
     for r in rooms:
         rid = r["id"]
         prompt = prompts.build_prompt(rid, r["name"], r.get("width_ft"), r.get("length_ft"),
-                                      view=r.get("view", False), staged=staged)
+                                      view=r.get("view", False), staged=staged, room_type=r.get("room_type"))
         control = geometry.control_for_room(r, settings.control_mode)
         if control:
             (out / f"{rid}.control.png").write_bytes(control)   # structural control / debugging
@@ -46,7 +46,8 @@ def generate_unit(unit_id: str, plan: Path | None = None, staged: bool = False,
 
         url = f"{settings.public_base}/{unit_id}/{rid}.jpg"
         panos[rid] = url
-        node = {k: r[k] for k in ("name", "dim", "view", "feat", "x", "y", "w", "h", "links", "source_plan") if k in r}
+        node = {k: r[k] for k in ("name", "dim", "view", "feat", "x", "y", "w", "h", "links", "source_plan",
+                                  "room_type", "dimension_source") if k in r}
         node["geometry"] = build_room_geometry(r)
         if plan_crop:
             node["source_plan_crop_url"] = f"{settings.public_base}/{unit_id}/{rid}.plan.png"

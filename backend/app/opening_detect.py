@@ -18,7 +18,11 @@ from .plan_geom_types import Opening, WallSegment
 
 
 def _sample_density_profile(raw_mask: np.ndarray, a, b, thickness_px: float, n: int):
-    """Foreground-pixel density at n points along the wall's own corridor."""
+    """Foreground-pixel density at n points along the wall's own corridor.
+
+    Vectorized over both the n sample points and the perpendicular scan (a
+    naive double python loop here is the dominant cost on a real, many-wall
+    plan - profiled at ~3s alone on the Continuum sample)."""
     h, w = raw_mask.shape
     length = math.hypot(b[0] - a[0], b[1] - a[1])
     if length < 1e-6:
@@ -26,21 +30,18 @@ def _sample_density_profile(raw_mask: np.ndarray, a, b, thickness_px: float, n: 
     ux, uy = (b[0] - a[0]) / length, (b[1] - a[1]) / length
     nx, ny = -uy, ux
     half = max(2.0, thickness_px / 2.0 + 2.0)
-    profile = []
-    for i in range(n):
-        t = i / max(1, n - 1)
-        px, py = a[0] + ux * length * t, a[1] + uy * length * t
-        hits = 0
-        total = 0
-        s = -half
-        while s <= half:
-            sx, sy = int(round(px + nx * s)), int(round(py + ny * s))
-            total += 1
-            if 0 <= sx < w and 0 <= sy < h and raw_mask[sy, sx] > 0:
-                hits += 1
-            s += 1.0
-        profile.append(hits / total if total else 0.0)
-    return profile
+    steps = np.arange(-half, half + 1.0, 1.0)  # matches the old while s<=half: ...; s+=1.0
+
+    t = np.linspace(0.0, 1.0, n)
+    px = a[0] + ux * length * t
+    py = a[1] + uy * length * t
+
+    sx = np.rint(px[:, None] + nx * steps[None, :]).astype(np.int64)
+    sy = np.rint(py[:, None] + ny * steps[None, :]).astype(np.int64)
+    in_bounds = (sx >= 0) & (sx < w) & (sy >= 0) & (sy < h)
+    sx_c, sy_c = np.clip(sx, 0, w - 1), np.clip(sy, 0, h - 1)
+    hits = ((raw_mask[sy_c, sx_c] > 0) & in_bounds).sum(axis=1)
+    return (hits / steps.size).tolist()
 
 
 def _find_gap_intervals(profile: list[float], length_px: float, density_threshold: float = 0.3,

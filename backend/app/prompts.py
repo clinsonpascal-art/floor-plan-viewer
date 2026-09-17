@@ -77,8 +77,34 @@ ROOM_CHARACTER = {
 }
 
 
-def build_prompt(room_id, room_name, width_ft=None, length_ft=None, view=None, staged=False):
-    char = ROOM_CHARACTER.get(room_id, {"view": bool(view), "empty": f"A {room_name}.", "staged": f"A {room_name}."})
+# Fallback body text for a room from an arbitrary/uploaded plan that has no
+# authored ROOM_CHARACTER entry. Generic staging appropriate to the room TYPE
+# only (e.g. "a kitchen has an island and cabinetry") - never a specific
+# brand/fixture claim, since nothing is actually known about this room beyond
+# its detected type and measurements.
+GENERIC_ROOM_TYPE_CHARACTER = {
+    "kitchen": "A modern kitchen with an island, integrated cabinetry, stone countertops and stainless appliances.",
+    "bathroom": "A modern bathroom with a vanity, mirror, and a tub or walk-in shower.",
+    "bedroom": "A bright bedroom with a bed and nightstands, soft natural light.",
+    "living": "A comfortable open living/great room with seating oriented toward the room's main light source.",
+    "dining": "A dining area with a table sized to the room.",
+    "foyer": "A welcoming entry foyer.",
+    "corridor": "A clean hallway/corridor.",
+    "den": "A quiet den / flex study room.",
+    "outdoor": "An outdoor terrace/patio area.",
+    "closet": "A built-in closet with shelving.",
+    "utility": "A utility / laundry room with basic fixtures.",
+    "garage": "A garage interior.",
+    "unknown": "An interior room.",
+}
+
+
+def build_prompt(room_id, room_name, width_ft=None, length_ft=None, view=None, staged=False, room_type=None):
+    if room_id in ROOM_CHARACTER:
+        char = ROOM_CHARACTER[room_id]
+    else:
+        body = GENERIC_ROOM_TYPE_CHARACTER.get(room_type, f"A {room_name}.")
+        char = {"view": bool(view), "empty": body, "staged": body}
     is_view = char.get("view", bool(view))
     dims = f"approximately {width_ft:g} by {length_ft:g} feet, " if width_ft and length_ft else ""
     body = char["staged" if staged else "empty"]
