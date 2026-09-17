@@ -415,9 +415,20 @@ if (typeof window !== "undefined" && window.LUXE_PANOS) { for (const k in window
     pbath:"https://raw.githubusercontent.com/clinsonpascal-art/floor-plan-viewer/master/backend/static/stock_photos/LUXE_Bathroom.jpg"
   };
 
+  /* Illustrative placeholder images for rooms with no real LUXE photo yet
+     (Foyer, Corridor, Den, Bedroom 2). Explicitly NOT real photographs -
+     each image is labeled as such. Checked only after REAL_PHOTOS, so the
+     5 real-photo rooms above are completely unaffected by this addition. */
+  var PLACEHOLDER_PHOTOS={
+    foyer:"https://raw.githubusercontent.com/clinsonpascal-art/floor-plan-viewer/master/backend/static/placeholder_photos/LUXE_Foyer.jpg",
+    corridor:"https://raw.githubusercontent.com/clinsonpascal-art/floor-plan-viewer/master/backend/static/placeholder_photos/LUXE_Corridor.jpg",
+    den:"https://raw.githubusercontent.com/clinsonpascal-art/floor-plan-viewer/master/backend/static/placeholder_photos/LUXE_Den.jpg",
+    bed2:"https://raw.githubusercontent.com/clinsonpascal-art/floor-plan-viewer/master/backend/static/placeholder_photos/LUXE_Bedroom_2.jpg"
+  };
+
   function sceneHTML(id){
     var r=ROOMS[id];
-    var photoUrl=REAL_PHOTOS[id]||r.panorama_url;
+    var photoUrl=REAL_PHOTOS[id]||PLACEHOLDER_PHOTOS[id]||r.panorama_url;
     if(photoUrl) return '<div class="pano" data-pano="1" style="background-image:url('+photoUrl+')"></div>';
     return buildRoomSVG(id);
   }
@@ -499,7 +510,7 @@ if (typeof window !== "undefined" && window.LUXE_PANOS) { for (const k in window
   var galleryGrid=document.getElementById("galleryGrid");
   ORDER.forEach(function(id){
     var r=ROOMS[id];
-    var photoUrl=REAL_PHOTOS[id]||r.panorama_url;
+    var photoUrl=REAL_PHOTOS[id]||PLACEHOLDER_PHOTOS[id]||r.panorama_url;
     var thumb = photoUrl
       ? '<div class="room-card-thumb" style="background-image:url('+photoUrl+')"></div>'
       : '<div class="room-card-thumb">'+sceneHTML(id)+'</div>';
