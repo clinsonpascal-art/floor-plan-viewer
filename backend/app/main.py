@@ -41,7 +41,13 @@ api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
 
 def auth(key: str | None = Depends(api_key_header)):
-    if settings.api_key and key != settings.api_key:
+    # Read fresh via os.getenv rather than the settings.api_key singleton -
+    # the singleton is built once at import time and was observed live to
+    # miss a Service Variable that a same-request os.getenv() call sees
+    # (the same class of staleness OPENAI_API_KEY/LUXE_PROVIDER already hit;
+    # see resolve_provider()).
+    required_key = os.getenv("LUXE_API_KEY")
+    if required_key and key != required_key:
         raise HTTPException(401, "invalid or missing X-API-Key")
     return True
 
@@ -57,7 +63,7 @@ def health():
     # resolved - it doesn't belong permanently on a public, unauthenticated
     # endpoint.
     return {"ok": True, "provider": resolve_provider(), "model": settings.openai_model,
-            "api_version": "v1", "authentication": bool(settings.api_key),
+            "api_version": "v1", "authentication": bool(os.getenv("LUXE_API_KEY")),
             "openai_key_configured": bool(os.getenv("OPENAI_API_KEY")),
             "railway_environment": os.getenv("RAILWAY_ENVIRONMENT_NAME"),
             "railway_service": os.getenv("RAILWAY_SERVICE_NAME"),
