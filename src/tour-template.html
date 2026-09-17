@@ -128,9 +128,24 @@ __ENGINE__
       spots=document.getElementById("spots"), playBtn=document.getElementById("play");
   var look={x:0,y:0}, drag=null, idle=0, viewpar=null;
 
+  /* Real photos for the 5 mapped rooms (GitHub-hosted, cropped, overlay-free).
+     Used for BOTH the gallery card thumbnail and the individual room view,
+     so opening a real-photo room shows the same photo the card showed -
+     independent of whatever this job's panorama_url happens to be. Every
+     other room is unaffected and keeps using its existing panorama_url or
+     procedural scene, exactly as before. */
+  var REAL_PHOTOS={
+    great:"https://raw.githubusercontent.com/clinsonpascal-art/floor-plan-viewer/master/backend/static/stock_photos/LUXE_Living_Room.jpg",
+    kitchen:"https://raw.githubusercontent.com/clinsonpascal-art/floor-plan-viewer/master/backend/static/stock_photos/LUXE_Kitchen.jpg",
+    terrace:"https://raw.githubusercontent.com/clinsonpascal-art/floor-plan-viewer/master/backend/static/stock_photos/LUXE_Patio.jpg",
+    primary:"https://raw.githubusercontent.com/clinsonpascal-art/floor-plan-viewer/master/backend/static/stock_photos/LUXE_Bedroom.jpg",
+    pbath:"https://raw.githubusercontent.com/clinsonpascal-art/floor-plan-viewer/master/backend/static/stock_photos/LUXE_Bathroom.jpg"
+  };
+
   function sceneHTML(id){
     var r=ROOMS[id];
-    if(r.panorama_url) return '<div class="pano" data-pano="1" style="background-image:url('+r.panorama_url+')"></div>';
+    var photoUrl=REAL_PHOTOS[id]||r.panorama_url;
+    if(photoUrl) return '<div class="pano" data-pano="1" style="background-image:url('+photoUrl+')"></div>';
     return buildRoomSVG(id);
   }
   function render(){
@@ -204,23 +219,14 @@ __ENGINE__
   svg.innerHTML=s;
   svg.querySelectorAll(".rm").forEach(function(z){z.addEventListener("click",function(){stopTour();go(z.dataset.id);});});
 
-  /* room gallery — one card per room. The 5 rooms with a real photograph
-     always show that exact photo in the gallery card (GitHub-hosted asset,
-     independent of whatever this particular job's panorama_url happens to
-     be), so the gallery never falls back to a generated placeholder for
-     them. Every other room keeps using its existing panorama_url / the
-     same procedural scene as today - nothing else changes. */
-  var GALLERY_REAL_PHOTOS={
-    great:"https://raw.githubusercontent.com/clinsonpascal-art/floor-plan-viewer/master/backend/static/stock_photos/LUXE_Living_Room.jpg",
-    kitchen:"https://raw.githubusercontent.com/clinsonpascal-art/floor-plan-viewer/master/backend/static/stock_photos/LUXE_Kitchen.jpg",
-    terrace:"https://raw.githubusercontent.com/clinsonpascal-art/floor-plan-viewer/master/backend/static/stock_photos/LUXE_Patio.jpg",
-    primary:"https://raw.githubusercontent.com/clinsonpascal-art/floor-plan-viewer/master/backend/static/stock_photos/LUXE_Bedroom.jpg",
-    pbath:"https://raw.githubusercontent.com/clinsonpascal-art/floor-plan-viewer/master/backend/static/stock_photos/LUXE_Bathroom.jpg"
-  };
+  /* room gallery — one card per room. Reuses the same REAL_PHOTOS map
+     sceneHTML() uses, so a card's thumbnail and its individual room view
+     always show the identical photo. Every other room keeps using its
+     existing panorama_url / the same procedural scene as today. */
   var galleryGrid=document.getElementById("galleryGrid");
   ORDER.forEach(function(id){
     var r=ROOMS[id];
-    var photoUrl=GALLERY_REAL_PHOTOS[id]||r.panorama_url;
+    var photoUrl=REAL_PHOTOS[id]||r.panorama_url;
     var thumb = photoUrl
       ? '<div class="room-card-thumb" style="background-image:url('+photoUrl+')"></div>'
       : '<div class="room-card-thumb">'+sceneHTML(id)+'</div>';
