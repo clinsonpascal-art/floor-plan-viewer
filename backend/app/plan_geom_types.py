@@ -38,3 +38,17 @@ class RoomPolygon:
     wall_ids: list[str] = field(default_factory=list)
     area_px2: float = 0.0
     centroid_px: tuple[float, float] = (0.0, 0.0)
+
+
+@dataclass
+class Opening:
+    """A detected gap in a wall (Phase 2). kind is "door"/"window" only when a
+    door-swing-arc or window-mullion symbol was actually matched; otherwise
+    "unknown_opening" - never guessed as one or the other without evidence."""
+    id: str
+    wall_id: str
+    kind: Literal["door", "window", "unknown_opening"]
+    offset_px: float          # distance along the wall from wall.a_px
+    width_px: float
+    confidence: float
+    detection_method: Literal["swing_arc_fit", "window_line_symbol", "gap_only"]
