@@ -152,6 +152,11 @@ def control_for_room(room: dict, mode: str = "depth") -> bytes | None:
     mode = (mode or "depth").lower()
     if mode == "none":
         return None
+    if not room.get("width_ft") and not room.get("length_ft"):
+        # No real measurement for this room - do not build a structural
+        # control image from a fabricated size. Let the provider fall back
+        # to unconditioned generation (see OpenAIProvider.generate(control=None)).
+        return None
     W, D, H = _dims(room)
     camX = W / 2
     c = _corners(W, D, H, camX)

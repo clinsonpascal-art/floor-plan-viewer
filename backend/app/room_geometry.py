@@ -23,8 +23,32 @@ def _rect_walls(w: float, d: float, h: float):
 
 
 def build_room_geometry(room: dict) -> dict:
-    w = float(room.get("width_ft") or room.get("length_ft") or 12.0)
-    d = float(room.get("length_ft") or room.get("width_ft") or 14.0)
+    width_ft = room.get("width_ft")
+    length_ft = room.get("length_ft")
+    if not width_ft and not length_ft:
+        # No real measurement for this room (e.g. an uploaded plan where the
+        # printed dimension wasn't legible). Report that honestly instead of
+        # fabricating a size - never invent a number that isn't in the source.
+        source_plan = room.get("source_plan") or {}
+        return {
+            "coordinate_system": "room_local_ft",
+            "source": "uploaded-plan-region" if source_plan.get("bbox_px") else "residence-a-authored-template",
+            "source_fidelity": "dimensions_not_available_no_geometry_generated",
+            "dimension_provenance": room.get("dimension_source", "not_available"),
+            "width_ft": None,
+            "depth_ft": None,
+            "ceiling_ft": None,
+            "boundary": None,
+            "source_polygon_px": room.get("source_polygon_px"),
+            "source_geometry": None,
+            "walls": [],
+            "doors": [],
+            "windows": [],
+            "connections": [x.get("to") for x in (room.get("links") or []) if x.get("to")],
+        }
+
+    w = float(width_ft or length_ft)
+    d = float(length_ft or width_ft)
     h = float(room.get("ceiling_ft") or 11.0)
 
     source_geom = build_source_geometry(room)
