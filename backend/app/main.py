@@ -27,7 +27,7 @@ from fastapi.staticfiles import StaticFiles
 
 import os
 
-from . import jobs, tracking
+from . import jobs, plan_upload_meta, tracking
 from .config import settings, resolve_provider
 
 app = FastAPI(title="LUXE Floor Plan to 3D API", version="1.1.0", docs_url="/docs", redoc_url="/redoc")
@@ -77,9 +77,13 @@ def create_project(name: str = Form("LUXE Project"), _=Depends(auth)):
 
 
 @app.post("/api/v1/projects/{project_id}/floor-plan")
-async def upload_floor_plan(project_id: str, file: UploadFile = File(...), _=Depends(auth)):
+async def upload_floor_plan(project_id: str, file: UploadFile = File(...),
+                            total_interior_sqft: float | None = Form(None),
+                            _=Depends(auth)):
     if not jobs.project_exists(project_id):
         raise HTTPException(404, "project not found")
+    if total_interior_sqft is not None and total_interior_sqft <= 0:
+        raise HTTPException(400, "total_interior_sqft must be positive")
     ext = Path(file.filename or "plan.jpg").suffix.lower() or ".jpg"
     if ext not in {".jpg", ".jpeg", ".png", ".webp"}:
         raise HTTPException(400, "floor plan must be JPG, PNG or WEBP")
@@ -88,6 +92,10 @@ async def upload_floor_plan(project_id: str, file: UploadFile = File(...), _=Dep
     path = directory / f"{uuid.uuid4().hex}{ext}"
     with path.open("wb") as dst:
         shutil.copyfileobj(file.file, dst)
+    # Optional scale reference for an arbitrary/uploaded plan (see plan_detect.py) -
+    # e.g. total_interior_sqft, the one number a real-estate listing almost always
+    # already has. A sidecar file, not a jobs.py column - see plan_upload_meta.py.
+    plan_upload_meta.write_plan_meta(path, total_interior_sqft)
     return {"project_id": project_id, "input_id": path.stem, "filename": file.filename,
             "path": str(path.relative_to(_OUT)), "status": "uploaded"}
 
@@ -108,10 +116,13 @@ async def create_job(project_id: str,
                      only: str = Form(""), provider: str = Form(""),
                      webhook_url: str | None = Form(None),
                      file: UploadFile | None = File(None),
+                     total_interior_sqft: float | None = Form(None),
                      idempotency_key: str | None = Header(None, alias="Idempotency-Key"),
                      _=Depends(auth)):
     if not jobs.project_exists(project_id):
         raise HTTPException(404, "project not found")
+    if total_interior_sqft is not None and total_interior_sqft <= 0:
+        raise HTTPException(400, "total_interior_sqft must be positive")
     plan = _resolve_plan(project_id, input_id)
     if file is not None:
         ext = Path(file.filename or "plan.jpg").suffix.lower() or ".jpg"
@@ -124,6 +135,11 @@ async def create_job(project_id: str,
             shutil.copyfileobj(file.file, dst)
     if plan is None and project_id not in {"residence-a", "continuum-residence-01"}:
         raise HTTPException(400, "an uploaded floor plan is required for a new project")
+    # Optional scale reference, same sidecar convention as the /floor-plan
+    # upload endpoint - lets a caller supply it here too (e.g. reusing an
+    # input_id uploaded before the number was known), without a jobs.py change.
+    if plan is not None:
+        plan_upload_meta.write_plan_meta(plan, total_interior_sqft)
     only_list = [s.strip() for s in only.split(",") if s.strip()] or None
     target_unit = unit_id or project_id
     jid, reused = jobs.create(project_id, target_unit, plan, staged, only_list, provider or None, idempotency_key, webhook_url)

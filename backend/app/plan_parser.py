@@ -23,7 +23,7 @@ import re
 from pathlib import Path
 
 from .config import settings
-from . import plan_detect
+from . import plan_detect, plan_upload_meta
 
 _LABEL_PROMPT = """You are given an architectural floor plan image and a list of
 already-detected room regions on that exact image, each with an index and its
@@ -111,7 +111,8 @@ def parse_uploaded_plan(plan: Path) -> list[dict]:
     """Detect room geometry deterministically from the uploaded image, then
     (only if a key is configured) optionally label the detected regions.
     Never invents a room boundary or a dimension."""
-    detected = plan_detect.detect_plan(plan)
+    total_interior_sqft = plan_upload_meta.read_total_interior_sqft(plan)
+    detected = plan_detect.detect_plan(plan, total_interior_sqft=total_interior_sqft)
     if not detected.rooms:
         reason = "; ".join(detected.warnings) or "no rooms could be detected in this image"
         raise RuntimeError(f"The floor-plan analyzer could not detect any rooms ({reason}).")

@@ -26,6 +26,11 @@ distinct cases:
    with no API key at all, and never invents a room or a dimension it
    couldn't actually measure - an unmeasured room is reported honestly
    (`dimension_source: "not_available"`), never given a fabricated size.
+   Passing `total_interior_sqft` at upload time (the one number a real
+   listing almost always already has - see `backend/API.md`) gives the
+   pipeline a real scale reference so it can report actual measurements
+   instead of "not available" for a plan with no OCR-legible printed
+   dimension text, which is most real-world listing floor plans.
 
 ## Verified end-to-end (real OpenAI provider, not mock)
 

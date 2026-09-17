@@ -52,12 +52,27 @@ curl -X POST https://ideal-trust-production-50d9.up.railway.app/api/v1/projects 
 ### 2. Upload the floor plan
 ```bash
 curl -X POST https://ideal-trust-production-50d9.up.railway.app/api/v1/projects/{project_id}/floor-plan \
-  -F "file=@floorplan.jpg;type=image/jpeg"
+  -F "file=@floorplan.jpg;type=image/jpeg" \
+  -F "total_interior_sqft=2080"
 ```
 ```json
 {"project_id": "...", "input_id": "2a15a6030cbd44b89e1f29f5fcb3dfa3", "filename": "floorplan.jpg", "status": "uploaded"}
 ```
 Accepted formats: JPG, PNG, WEBP.
+
+`total_interior_sqft` is optional but **strongly recommended** - it's the one
+number that lets the deterministic pipeline produce real room dimensions for
+a plan with no OCR-legible printed dimension text (which is most real-world
+listing floor plans). Without it, and without legible printed dimension text,
+every room's `width_ft`/`depth_ft` stay `null` with
+`"dimension_source": "not_available"` - honest, but unmeasured. With it,
+rooms get a real (if lower-confidence, area-derived)
+`"dimension_source": "estimated_from_total_area_low_confidence"` measurement,
+which also then constrains the generated image via a real structural control
+image (see PROMPTS.md). Must be a positive number; a listing's already-known
+total square footage is normally exactly what you'd pass here. Can also be
+supplied later, at job-creation time (step 3), if it wasn't known at upload
+time - see below.
 
 ### 3. Start generation
 ```bash
@@ -72,6 +87,7 @@ Optional form fields:
 - `staged` - `true`/`false`, lightly furnished vs. empty-architectural render style
 - `only` - comma-separated room ids to generate a subset (useful for cheap testing)
 - `provider` - force `mock` / `openai` / `replicate`; omit to auto-select the real provider when a key is configured
+- `total_interior_sqft` - same scale reference as step 2, for when it wasn't supplied at upload time (does not overwrite an existing value if omitted here)
 - `webhook_url` - receives a completion/error callback
 - `Idempotency-Key` header - retrying the same key returns the existing job instead of creating a duplicate
 
