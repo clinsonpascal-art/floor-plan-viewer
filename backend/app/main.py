@@ -50,10 +50,18 @@ def auth(key: str | None = Depends(api_key_header)):
 def health():
     # "provider" reports what will ACTUALLY be used (see resolve_provider()),
     # not just the configured default - and only ever a presence boolean for
-    # the key, never the key itself.
+    # the key, never the key itself. The railway_* fields are deployment
+    # metadata Railway itself injects (never secrets) - exposed so a "the
+    # variable is set but the running container doesn't see it" report can be
+    # diagnosed directly (wrong environment, or a container that predates the
+    # variable being saved) instead of guessed at.
     return {"ok": True, "provider": resolve_provider(), "model": settings.openai_model,
             "api_version": "v1", "authentication": bool(settings.api_key),
-            "openai_key_configured": bool(os.getenv("OPENAI_API_KEY"))}
+            "openai_key_configured": bool(os.getenv("OPENAI_API_KEY")),
+            "railway_environment": os.getenv("RAILWAY_ENVIRONMENT_NAME"),
+            "railway_service": os.getenv("RAILWAY_SERVICE_NAME"),
+            "railway_deployment_id": os.getenv("RAILWAY_DEPLOYMENT_ID"),
+            "railway_git_commit": os.getenv("RAILWAY_GIT_COMMIT_SHA")}
 
 
 @app.get("/api/v1/health")
