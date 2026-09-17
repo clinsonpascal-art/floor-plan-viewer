@@ -4,7 +4,7 @@ from pathlib import Path
 
 from . import analyze, geometry, prompts
 from .room_geometry import build_room_geometry
-from .config import settings
+from .config import settings, resolve_provider
 from .providers import get_provider
 from .validation import validate_manifest
 from .plan_ingest import source_info
@@ -19,7 +19,7 @@ DISCLAIMER = ("AI architectural visualization generated from the developer floor
 
 def generate_unit(unit_id: str, plan: Path | None = None, staged: bool = False,
                   only: list | None = None, provider: str | None = None) -> dict:
-    prov_name = provider or settings.provider
+    prov_name = provider or resolve_provider()
     prov = get_provider(prov_name)
     rooms = analyze.get_rooms(unit_id, plan, prov_name, only)
 

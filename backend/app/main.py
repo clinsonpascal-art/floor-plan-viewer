@@ -25,8 +25,10 @@ from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.security import APIKeyHeader
 from fastapi.staticfiles import StaticFiles
 
+import os
+
 from . import jobs, tracking
-from .config import settings
+from .config import settings, resolve_provider
 
 app = FastAPI(title="LUXE Floor Plan to 3D API", version="1.1.0", docs_url="/docs", redoc_url="/redoc")
 app.add_middleware(CORSMiddleware, allow_origins=[o.strip() for o in settings.cors_origins.split(",")],
@@ -46,8 +48,12 @@ def auth(key: str | None = Depends(api_key_header)):
 
 @app.get("/health")
 def health():
-    return {"ok": True, "provider": settings.provider, "model": settings.openai_model,
-            "api_version": "v1", "authentication": bool(settings.api_key)}
+    # "provider" reports what will ACTUALLY be used (see resolve_provider()),
+    # not just the configured default - and only ever a presence boolean for
+    # the key, never the key itself.
+    return {"ok": True, "provider": resolve_provider(), "model": settings.openai_model,
+            "api_version": "v1", "authentication": bool(settings.api_key),
+            "openai_key_configured": bool(os.getenv("OPENAI_API_KEY"))}
 
 
 @app.get("/api/v1/health")
