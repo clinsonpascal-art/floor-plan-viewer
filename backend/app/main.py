@@ -46,40 +46,23 @@ def auth(key: str | None = Depends(api_key_header)):
     return True
 
 
-def _env_diagnostics() -> dict:
-    """Names only, never values - lets a "the variable is set in Railway but
-    the app reports false" report be root-caused (e.g. a trailing-space or
-    mis-cased key name from a copy/paste, which would make Railway's UI show
-    "OPENAI_API_KEY" while the actual process env key differs by one
-    invisible character) instead of guessed at blind."""
-    keys = list(os.environ.keys())
-    matches = [k for k in keys if "OPENAI" in k.upper() or "API_KEY" in k.upper()]
-    exact_present = "OPENAI_API_KEY" in os.environ
-    return {
-        "openai_api_key_exact_name_present": exact_present,
-        "env_var_names_matching_openai_or_api_key": matches,
-        "total_env_var_count": len(keys),
-        "custom_railway_vars_present": any(k.startswith("RAILWAY_") for k in keys),
-    }
-
-
 @app.get("/health")
 def health():
     # "provider" reports what will ACTUALLY be used (see resolve_provider()),
     # not just the configured default - and only ever a presence boolean for
     # the key, never the key itself. The railway_* fields are deployment
-    # metadata Railway itself injects (never secrets) - exposed so a "the
-    # variable is set but the running container doesn't see it" report can be
-    # diagnosed directly (wrong environment, or a container that predates the
-    # variable being saved) instead of guessed at.
+    # metadata Railway itself injects (never secrets) - kept for ongoing
+    # "which build is actually live" visibility. The env-var-name enumeration
+    # used to root-cause the earlier missing-key incident was removed once
+    # resolved - it doesn't belong permanently on a public, unauthenticated
+    # endpoint.
     return {"ok": True, "provider": resolve_provider(), "model": settings.openai_model,
             "api_version": "v1", "authentication": bool(settings.api_key),
             "openai_key_configured": bool(os.getenv("OPENAI_API_KEY")),
             "railway_environment": os.getenv("RAILWAY_ENVIRONMENT_NAME"),
             "railway_service": os.getenv("RAILWAY_SERVICE_NAME"),
             "railway_deployment_id": os.getenv("RAILWAY_DEPLOYMENT_ID"),
-            "railway_git_commit": os.getenv("RAILWAY_GIT_COMMIT_SHA"),
-            "env_diagnostics": _env_diagnostics()}
+            "railway_git_commit": os.getenv("RAILWAY_GIT_COMMIT_SHA")}
 
 
 @app.get("/api/v1/health")
