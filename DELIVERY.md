@@ -68,9 +68,16 @@ and upload the plan as the `file` form field.
 Set:
 
 ```bash
-export LUXE_PROVIDER=openai
 export OPENAI_API_KEY=...
 ```
+
+`LUXE_PROVIDER=openai` no longer needs to be set by hand - the API
+automatically switches from the mock renderer to the real OpenAI provider
+the moment `OPENAI_API_KEY` is present (see `resolve_provider()` in
+`backend/app/config.py`). Set `LUXE_PROVIDER` explicitly only to force a
+specific provider regardless of a configured key. See `backend/API.md` for
+the full endpoint reference and `backend/PROMPTS.md` for every prompt used
+in production.
 
 For structure-conditioned generation, configure the Replicate provider and a compatible model in:
 

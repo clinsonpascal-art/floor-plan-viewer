@@ -14,13 +14,19 @@ uvicorn app.main:app --reload
 
 ## Go live (photoreal)
 ```
-export LUXE_PROVIDER=openai
 export OPENAI_API_KEY=sk-...
 uvicorn app.main:app
+# No need to also set LUXE_PROVIDER=openai - the API auto-switches to the
+# real OpenAI provider the moment OPENAI_API_KEY is present (see
+# resolve_provider() in app/config.py). Set LUXE_PROVIDER explicitly only to
+# force mock/replicate regardless of a configured key.
 # POST /units/residence-a/generate   (form: staged, only, provider, file?)
 # GET  /jobs/{job_id}                 poll to "done"
 # GET  /units/residence-a/manifest
 ```
+See **API.md** for the full versioned endpoint reference and working
+examples, and **PROMPTS.md** for every prompt used in production (image
+generation and floor-plan vision assist).
 
 ## Structure-faithful renders (Phase B)
 Each room gets an eye-level **control image** (depth or lineart) built in pure
@@ -70,4 +76,4 @@ The service exposes a stable `/api/v1` REST surface for integration:
 
 If `LUXE_API_KEY` is set, clients send `X-API-Key`. `Idempotency-Key` prevents a client retry from creating a duplicate job for the same project. Jobs are recorded in SQLite and executed by a single-process worker queue; this can be replaced by Redis/Celery without changing the API contract. Optional `webhook_url` receives completion/error callbacks.
 
-For an unregistered/new floor plan, supply `unit_id` only when you have a known layout template. Otherwise the live OpenAI vision parser analyzes the uploaded plan and creates the room list from the visible plan. A live `OPENAI_API_KEY` is required for that generic path.
+For an unregistered/new floor plan (any floor plan, not just Residence A or the Continuum unit), supply an uploaded plan without a known `unit_id`. Room boundaries, walls, openings and dimensions (when a real scale reference exists) are extracted by a deterministic computer-vision pipeline (`app/plan_detect.py`) - this works with **no API key at all**, and never invents a room or a dimension it couldn't actually measure (unmeasurable rooms are reported with `dimension_source: "not_available"`, not a guessed size). If `OPENAI_API_KEY` is present, an additional optional step reads printed room labels and maps them onto the already-detected polygons - it never invents geometry itself. See **API.md** for a full worked example of this flow.
