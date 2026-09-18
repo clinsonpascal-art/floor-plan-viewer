@@ -21,7 +21,13 @@
   #play:hover{border-color:var(--gold)}
   #play.on{background:var(--gold);color:var(--navy);font-weight:700}
 
-  #stage{position:relative;flex:1;min-height:0;overflow:hidden;background:#000;cursor:grab;touch-action:none}
+  /* flex:1 lets #stage grow, but without a floor it can also shrink toward
+     zero (e.g. a short effective viewport height, such as DevTools docked
+     at the bottom) once the rest of #app's column no longer fits in 100vh -
+     collapsing the main image area to a sliver that .room-info's own
+     content-sized height then visually dominates. max() keeps it usable at
+     both very short and very tall viewports. */
+  #stage{position:relative;flex:1;min-height:max(260px,40vh);overflow:hidden;background:#000;cursor:grab;touch-action:none}
   #stage.grabbing{cursor:grabbing}
   .scene{position:absolute;inset:0;transform-origin:center;opacity:1;
     transition:transform .55s cubic-bezier(.22,.61,.2,1),opacity .45s ease}
