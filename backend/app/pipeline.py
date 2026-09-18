@@ -52,6 +52,13 @@ def generate_unit(unit_id: str, plan: Path | None = None, staged: bool = False,
         if plan_crop:
             node["source_plan_crop_url"] = f"{settings.public_base}/{unit_id}/{rid}.plan.png"
         node["panorama_url"] = url
+        # Multiple viewpoints per room, smallest-possible extension of the
+        # existing single-panorama_url shape: today there is exactly one real
+        # generated/static image per room, so this is a length-1 list built
+        # from that same real url - never a second, invented image. A future
+        # generation pass that produces more angles for a room only needs to
+        # append more entries here; nothing downstream has to change shape.
+        node["viewpoints"] = [{"id": "main", "label": "Main View", "url": url}]
         graph[rid] = node
         order.append(rid)
 

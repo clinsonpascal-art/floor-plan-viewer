@@ -39,6 +39,16 @@
   .room-info .meta{margin-top:.2rem;font-size:.66rem;color:var(--gold-soft);letter-spacing:.07em}
   .room-info .feat{margin-top:.35rem;font-size:.64rem;color:rgba(245,241,232,.75);line-height:1.35}
 
+  #viewpoints{position:absolute;right:12px;bottom:12px;z-index:8;display:none;gap:.35rem;
+    background:rgba(11,31,51,.55);border:1px solid rgba(200,162,74,.35);border-radius:20px;
+    padding:.4rem .55rem;backdrop-filter:blur(6px);max-width:60%;flex-wrap:wrap}
+  #viewpoints .vp-label{width:100%;font-size:.52rem;letter-spacing:.14em;color:var(--gold-soft);
+    text-transform:uppercase;margin-bottom:.15rem}
+  #viewpoints button{background:transparent;border:1px solid rgba(200,162,74,.45);color:rgba(245,241,232,.85);
+    padding:.28rem .65rem;border-radius:16px;font-size:.62rem;letter-spacing:.04em;cursor:pointer;white-space:nowrap}
+  #viewpoints button:hover{border-color:var(--gold)}
+  #viewpoints button.active{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:700}
+
   .hotspot{position:absolute;z-index:9;transform:translate(-50%,-50%);display:flex;align-items:center;gap:.35rem;
     cursor:pointer;background:rgba(11,31,51,.5);border:1px solid rgba(200,162,74,.6);color:var(--paper);
     padding:.4rem .7rem;border-radius:24px;font-size:.68rem;letter-spacing:.05em;backdrop-filter:blur(5px);
@@ -81,6 +91,10 @@
   .room-card-label{padding:.55rem .7rem;display:flex;align-items:center;justify-content:space-between;gap:.4rem}
   .room-card-label span:first-child{font-size:.72rem;color:var(--paper);letter-spacing:.02em}
   .room-card-label .tag{font-size:.56rem;color:var(--gold-soft);letter-spacing:.08em;white-space:nowrap}
+  .live-it-btn{display:block;width:calc(100% - 1.4rem);margin:0 .7rem .65rem;background:var(--gold);
+    color:var(--navy);border:none;border-radius:16px;padding:.42rem 0;font-size:.6rem;font-weight:700;
+    letter-spacing:.14em;cursor:pointer;text-transform:uppercase}
+  .live-it-btn:hover{background:var(--gold-soft)}
   @media (max-width:520px){
     #galleryGrid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem}
     #gallery{padding:1.2rem .8rem 2rem}
@@ -100,6 +114,7 @@
     <div class="aiviz">AI RENDERING &amp; VISUALIZATION</div>
     <div class="room-info" id="info"></div>
     <div id="spots"></div>
+    <div id="viewpoints"></div>
   </div>
 
   <div class="hint">Drag to look around · tap a doorway or a room on the plan to walk through</div>
@@ -395,10 +410,11 @@ if (typeof window !== "undefined" && window.LUXE_PANOS) { for (const k in window
 
 /* ===== VIEWER ===== */
 (function(){
-  var current="foyer", touring=false, tourTimer=null;
+  var current="foyer", currentVp=null, touring=false, tourTimer=null;
   var stage=document.getElementById("stage"), sceneEl=document.getElementById("sceneEl"),
       lookEl=document.getElementById("lookEl"), info=document.getElementById("info"),
-      spots=document.getElementById("spots"), playBtn=document.getElementById("play");
+      spots=document.getElementById("spots"), playBtn=document.getElementById("play"),
+      vpBar=document.getElementById("viewpoints");
   var look={x:0,y:0}, drag=null, idle=0, viewpar=null;
 
   /* Real photos for the 5 mapped rooms (GitHub-hosted, cropped, overlay-free).
@@ -426,10 +442,26 @@ if (typeof window !== "undefined" && window.LUXE_PANOS) { for (const k in window
     bed2:"https://raw.githubusercontent.com/clinsonpascal-art/floor-plan-viewer/master/backend/static/placeholder_photos/LUXE_Bedroom_2.jpg"
   };
 
-  function sceneHTML(id){
+  /* Residence -> Rooms -> Viewpoints: a room's real viewpoint list.
+     Priority: (1) a curated REAL_PHOTOS/PLACEHOLDER_PHOTOS entry always wins
+     when one exists for this room id - these are the known-good demo photos
+     and must not be shadowed by a generated placeholder (e.g. the mock
+     provider's render); (2) otherwise the backend-provided ROOMS[id].viewpoints
+     (see pipeline.py) - a real job's own generated/static asset(s); (3) a
+     single synthetic-but-real viewpoint wrapping panorama_url as a last
+     resort. Never a second, invented image at any step. */
+  function getViewpoints(id){
     var r=ROOMS[id];
-    var photoUrl=REAL_PHOTOS[id]||PLACEHOLDER_PHOTOS[id]||r.panorama_url;
-    if(photoUrl) return '<div class="pano" data-pano="1" style="background-image:url('+photoUrl+')"></div>';
+    var curated=REAL_PHOTOS[id]||PLACEHOLDER_PHOTOS[id];
+    if(curated) return [{id:"main",label:"Main View",url:curated}];
+    if(r.viewpoints && r.viewpoints.length) return r.viewpoints;
+    return [{id:"main",label:"Main View",url:r.panorama_url||null}];
+  }
+  function sceneHTML(id,vpId){
+    var vps=getViewpoints(id), vp=null;
+    for(var i=0;i<vps.length;i++){ if(vps[i].id===vpId){vp=vps[i];break;} }
+    if(!vp) vp=vps[0];
+    if(vp && vp.url) return '<div class="pano" data-pano="1" style="background-image:url('+vp.url+')"></div>';
     return buildRoomSVG(id);
   }
   function render(){
@@ -447,20 +479,49 @@ if (typeof window !== "undefined" && window.LUXE_PANOS) { for (const k in window
     document.querySelectorAll("#rooms button").forEach(function(b){b.classList.toggle("active",b.dataset.id===current);});
     document.querySelectorAll(".rm").forEach(function(z){z.classList.toggle("active",z.dataset.id===current);});
     document.querySelectorAll(".room-card").forEach(function(c){c.classList.toggle("active",c.dataset.id===current);});
+    renderViewpoints();
     viewpar=lookEl.querySelector("#viewpar");
     look.x=0;look.y=0;applyLook();
   }
-  function mount(id,instant){
-    if(instant){lookEl.innerHTML=sceneHTML(id);render();return;}
+  /* Viewpoint selector for the currently-open room. Only shown when a room
+     genuinely has more than one real viewpoint - never rendered as a fake
+     choice over a single image. */
+  function renderViewpoints(){
+    var vps=getViewpoints(current);
+    if(!currentVp || !vps.some(function(v){return v.id===currentVp;})) currentVp=vps[0].id;
+    vpBar.innerHTML="";
+    if(vps.length<2){ vpBar.style.display="none"; return; }
+    vpBar.style.display="flex";
+    var label=document.createElement("div");label.className="vp-label";label.textContent="Viewpoints";
+    vpBar.appendChild(label);
+    vps.forEach(function(v){
+      var b=document.createElement("button");b.textContent=v.label||v.id;b.dataset.id=v.id;
+      b.className=v.id===currentVp?"active":"";
+      b.addEventListener("click",function(e){e.stopPropagation();selectViewpoint(v.id);});
+      vpBar.appendChild(b);
+    });
+  }
+  /* Switch viewpoint within the current room - no room transition, just the
+     displayed image/scene changes. */
+  function selectViewpoint(vpId){
+    if(vpId===currentVp){return;}
+    currentVp=vpId;
+    lookEl.innerHTML=sceneHTML(current,currentVp);
+    viewpar=lookEl.querySelector("#viewpar");
+    look.x=0;look.y=0;applyLook();
+    vpBar.querySelectorAll("button").forEach(function(b){b.classList.toggle("active",b.dataset.id===currentVp);});
+  }
+  function mount(id,vpId,instant){
+    if(instant){lookEl.innerHTML=sceneHTML(id,vpId);render();return;}
     sceneEl.style.transform="scale(1.32)";sceneEl.style.opacity="0";       // dolly out (walk toward door)
     setTimeout(function(){
-      lookEl.innerHTML=sceneHTML(id);render();
+      lookEl.innerHTML=sceneHTML(id,vpId);render();
       sceneEl.style.transition="none";sceneEl.style.transform="scale(1.07)";sceneEl.style.opacity="0";
       void sceneEl.offsetWidth;                                            // reflow
       sceneEl.style.transition="";sceneEl.style.transform="scale(1)";sceneEl.style.opacity="1";
     },230);
   }
-  function go(id){ if(id===current){return;} current=id; mount(id,false);
+  function go(id,vpId){ if(id===current){return;} current=id; currentVp=vpId||null; mount(id,currentVp,false);
     /* window.LUXE_TRACKING && LUXE_TRACKING.track("unit3d_room_enter",{room:id}); */ }
 
   function applyLook(){
@@ -517,7 +578,11 @@ if (typeof window !== "undefined" && window.LUXE_PANOS) { for (const k in window
     var card=document.createElement("div");
     card.className="room-card"; card.dataset.id=id;
     card.innerHTML=thumb+'<div class="room-card-label"><span>'+r.name+'</span>'
-      +(r.view?'<span class="tag">VIEW</span>':'')+'</div>';
+      +(r.view?'<span class="tag">VIEW</span>':'')+'</div>'
+      +'<button class="live-it-btn" type="button">Live It</button>';
+    /* "LIVE IT" opens the interactive viewer on this room - same action as
+       clicking the card itself; a real, labeled button click bubbles to this
+       same handler rather than needing its own duplicate logic. */
     card.addEventListener("click",function(){
       stopTour(); go(id);
       stage.scrollIntoView({behavior:"smooth",block:"start"});
@@ -525,7 +590,7 @@ if (typeof window !== "undefined" && window.LUXE_PANOS) { for (const k in window
     galleryGrid.appendChild(card);
   });
 
-  mount(current,true);
+  mount(current,null,true);
 })();
 </script>
 </body>
