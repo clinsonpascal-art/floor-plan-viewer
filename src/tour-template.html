@@ -143,7 +143,11 @@
 __ENGINE__
 /* ===== VIEWER ===== */
 (function(){
-  var current="foyer", currentVp=null, touring=false, tourTimer=null;
+  // Default to the first room this unit's own data actually has - "foyer"
+  // only exists in the Residence A demo graph; any other unit (e.g.
+  // continuum-residence-01, whose first room is "bed3") has no such room,
+  // which crashed the very first render before this fix.
+  var current=(ORDER && ORDER.length ? ORDER[0] : "foyer"), currentVp=null, touring=false, tourTimer=null;
   var stage=document.getElementById("stage"), sceneEl=document.getElementById("sceneEl"),
       lookEl=document.getElementById("lookEl"), info=document.getElementById("info"),
       spots=document.getElementById("spots"), playBtn=document.getElementById("play"),
@@ -185,6 +189,12 @@ __ENGINE__
      resort. Never a second, invented image at any step. */
   function getViewpoints(id){
     var r=ROOMS[id];
+    // Real multi-lighting data (>1 real viewpoint) always wins - this is
+    // what a curated room's own lighting generation produces (see
+    // pipeline.py), and it must not be shadowed by the curated single photo
+    // below (also fixes REAL_PHOTOS/PLACEHOLDER_PHOTOS accidentally matching
+    // a same-named room id in a different, unrelated unit).
+    if(r.viewpoints && r.viewpoints.length>1) return r.viewpoints;
     var curated=REAL_PHOTOS[id]||PLACEHOLDER_PHOTOS[id];
     if(curated) return [{id:"main",label:"Main View",url:curated}];
     if(r.viewpoints && r.viewpoints.length) return r.viewpoints;

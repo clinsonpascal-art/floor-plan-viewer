@@ -52,13 +52,35 @@ def generate_unit(unit_id: str, plan: Path | None = None, staged: bool = False,
         static_rel = STATIC_ROOM_IMAGES.get(unit_id, {}).get(rid)
 
         viewpoints = []
-        if static_rel:
-            # Real photo override: exactly one real, curated image - lighting
-            # variants don't apply to a fixed photograph, never fabricated.
+        if static_rel and not conditions:
+            # Real photo override, no lighting requested: unchanged behavior -
+            # exactly one real, curated image.
             img = (STATIC_DIR / static_rel).read_bytes()
             (out / f"{rid}.jpg").write_bytes(img)
             url = f"{settings.public_base}/{unit_id}/{rid}.jpg"
             viewpoints.append({"id": "main", "label": "Main View", "url": url})
+        elif static_rel and conditions:
+            # Real photo override, lighting requested: the curated photo is
+            # reused (never regenerated, never deleted) as the "daylight"
+            # viewpoint; every other requested condition is generated fresh,
+            # same as any non-curated room. "daylight" always included even
+            # if not explicitly requested, since it costs nothing extra and
+            # this is how the existing real photo is preserved.
+            effective = ["daylight"] + [c for c in conditions if c != "daylight"]
+            curated_bytes = (STATIC_DIR / static_rel).read_bytes()
+            for cond in effective:
+                if cond == "daylight":
+                    (out / f"{rid}.daylight.jpg").write_bytes(curated_bytes)
+                else:
+                    prompt = prompts.build_prompt(rid, r["name"], r.get("width_ft"), r.get("length_ft"),
+                                                  view=r.get("view", False), staged=staged,
+                                                  room_type=r.get("room_type"), lighting=cond)
+                    img = prov.generate(prompt, settings.image_size, control)
+                    (out / f"{rid}.{cond}.jpg").write_bytes(img)
+                cond_url = f"{settings.public_base}/{unit_id}/{rid}.{cond}.jpg"
+                viewpoints.append({"id": cond, "label": LIGHTING_LABELS.get(cond, cond.title()), "url": cond_url})
+            (out / f"{rid}.jpg").write_bytes((out / f"{rid}.daylight.jpg").read_bytes())
+            url = f"{settings.public_base}/{unit_id}/{rid}.jpg"
         elif conditions:
             for cond in conditions:
                 prompt = prompts.build_prompt(rid, r["name"], r.get("width_ft"), r.get("length_ft"),

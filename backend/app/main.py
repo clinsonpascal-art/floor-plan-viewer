@@ -303,7 +303,8 @@ def _done_manifest(job_id: str) -> dict:
 @app.post("/units/{unit_id}/generate")
 async def generate_legacy(unit_id: str, background: BackgroundTasks,
                           staged: bool = Form(False), only: str = Form(""),
-                          provider: str = Form(""), file: UploadFile | None = File(None)):
+                          provider: str = Form(""), lighting: str = Form(""),
+                          file: UploadFile | None = File(None)):
     plan_path = None
     if file is not None:
         tmp = _OUT / "_legacy_inputs"
@@ -317,7 +318,9 @@ async def generate_legacy(unit_id: str, background: BackgroundTasks,
         with jobs._conn() as c:
             c.execute("INSERT OR IGNORE INTO projects VALUES (?,?,?)", (unit_id, unit_id, jobs._now()))
     only_list = [s.strip() for s in only.split(",") if s.strip()] or None
-    jid, _ = jobs.create(unit_id, unit_id, plan_path, staged, only_list, provider or None)
+    lighting_list = [s.strip().lower() for s in lighting.split(",") if s.strip()] or None
+    jid, _ = jobs.create(unit_id, unit_id, plan_path, staged, only_list, provider or None,
+                         lighting=lighting_list)
     tracking.track("unit3d_generate", {"unit": unit_id, "job": jid, "staged": staged})
     return {"job_id": jid}
 

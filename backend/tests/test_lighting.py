@@ -157,17 +157,53 @@ def test_api_job_creation_accepts_lighting_field_end_to_end():
     assert [v["label"] for v in vps] == ["Sunrise", "Daylight"]
 
 
-def test_generate_unit_static_photo_override_ignores_lighting_request():
+def test_generate_unit_static_photo_override_without_lighting_is_unchanged():
     # "great" has a real curated static photo for continuum-residence-01
-    # (see static_room_images.py) - lighting variants must never be
-    # fabricated for a fixed real photograph.
-    out = ROOT / "renders_lighting_test_static"
+    # (see static_room_images.py). With no lighting requested, behavior is
+    # exactly what it was before the lighting feature existed.
+    out = ROOT / "renders_lighting_test_static_nolighting"
+    old = cfg.settings.out_dir
+    cfg.settings.out_dir = str(out)
+    try:
+        manifest = generate_unit("continuum-residence-01", PLAN, provider="mock", only=["great"])
+        vps = manifest["rooms"]["great"]["viewpoints"]
+        assert vps == [{"id": "main", "label": "Main View", "url": manifest["rooms"]["great"]["panorama_url"]}]
+    finally:
+        cfg.settings.out_dir = old
+
+
+def test_generate_unit_static_photo_override_with_lighting_reuses_curated_as_daylight():
+    # A curated room must NOT be excluded from lighting: the existing real
+    # photo becomes the "daylight" viewpoint (reused byte-for-byte, never
+    # regenerated or deleted), and every other requested condition is
+    # generated fresh - same as any other room.
+    import hashlib
+    STATIC_DIR = ROOT / "static"
+    from app.static_room_images import STATIC_ROOM_IMAGES
+    curated_path = STATIC_DIR / STATIC_ROOM_IMAGES["continuum-residence-01"]["great"]
+
+    out = ROOT / "renders_lighting_test_static_withlighting"
     old = cfg.settings.out_dir
     cfg.settings.out_dir = str(out)
     try:
         manifest = generate_unit("continuum-residence-01", PLAN, provider="mock", only=["great"],
-                                 lighting=["sunrise", "daylight", "sunset"])
+                                 lighting=["sunrise", "sunset"])
         vps = manifest["rooms"]["great"]["viewpoints"]
-        assert vps == [{"id": "main", "label": "Main View", "url": manifest["rooms"]["great"]["panorama_url"]}]
+        # "daylight" is always included (the reused curated photo), forced
+        # first, even though it wasn't in the requested list.
+        assert [v["id"] for v in vps] == ["daylight", "sunrise", "sunset"]
+
+        unit_dir = out / "continuum-residence-01"
+        daylight_file = unit_dir / "great.daylight.jpg"
+        assert daylight_file.exists()
+        assert hashlib.sha256(daylight_file.read_bytes()).hexdigest() == hashlib.sha256(curated_path.read_bytes()).hexdigest(), (
+            "the daylight viewpoint must be the real curated photo, byte-for-byte, not regenerated"
+        )
+        # The other conditions are real, distinct, freshly generated files.
+        assert (unit_dir / "great.sunrise.jpg").exists()
+        assert (unit_dir / "great.sunset.jpg").exists()
+        # panorama_url (backward-compat) mirrors daylight, i.e. the curated photo.
+        assert manifest["rooms"]["great"]["panorama_url"].endswith("/great.jpg")
+        assert hashlib.sha256((unit_dir / "great.jpg").read_bytes()).hexdigest() == hashlib.sha256(curated_path.read_bytes()).hexdigest()
     finally:
         cfg.settings.out_dir = old
