@@ -12,22 +12,67 @@ Consistency tip for the engineer: fix one seed and keep DESIGN_LANGUAGE identica
 across rooms so finishes match unit-wide.
 """
 
-# The finish, reused verbatim in every room — this is what makes it one residence.
+# The finish, reused verbatim in every room so the whole unit reads as ONE home.
+# Lighting-independent: floor/wall/ceiling materials only - the light itself
+# (and the exterior sky/water it implies) comes from LIGHTING below, per room.
 DESIGN_LANGUAGE = (
     "Ultra-luxury Miami waterfront condominium interior in the Antonio Citterio idiom. "
-    "Polished large-format cream travertine floor, softly reflective, warm sunlight "
-    "streaking across it in long soft diagonals. Warm white plaster walls and ceiling, "
-    "flush recessed circular downlights, 11-foot ceilings. Restrained, editorial, "
-    "airy and bright — high-key natural daylight, gentle shadows, high dynamic range."
+    "Polished large-format cream travertine floor, softly reflective. Warm white plaster "
+    "walls and ceiling, flush recessed circular downlights, 11-foot ceilings. Restrained, "
+    "editorial architectural photography."
 )
 
-# View rooms: the curved bay glass from the sample.
-VIEW_CLAUSE = (
-    "A gently curved floor-to-ceiling glass curtain wall with slim aluminium mullions "
-    "opens to a wide Biscayne Bay view: calm turquoise water, low barrier islands and "
-    "the distant Miami skyline on the horizon, a soft golden sunrise low over the water "
-    "casting a bright reflection, a slim glass balcony railing just outside."
-)
+# Selectable lighting/daylight conditions (client-facing viewpoint control).
+# "mood": the interior light description (every room, view or not).
+# "sky": the exterior sky/water/skyline description (view rooms only, spliced
+# into view_clause()). Keep these paired so a room's interior light and its
+# visible exterior light always agree with each other.
+DEFAULT_LIGHTING = "daylight"
+LIGHTING = {
+    "sunrise": {
+        "mood": "Soft early-morning light, long warm-gold shadows streaking across the floor, "
+                "gentle low-angle sun, high dynamic range.",
+        "sky": "a soft golden sunrise low over the water, calm turquoise-to-rose water, the "
+               "Miami skyline silhouetted on the horizon, a bright warm reflection on the glass",
+    },
+    "daylight": {
+        "mood": "Bright even midday daylight, high-key natural light, crisp soft shadows, "
+                "high dynamic range.",
+        "sky": "a clear bright midday sky, calm turquoise water, the Miami skyline sharp on "
+               "the horizon in full sun",
+    },
+    "sunset": {
+        "mood": "Warm late-afternoon light, long amber shadows, golden-hour glow across the "
+                "floor and walls.",
+        "sky": "a warm orange-and-pink sunset over the water, the Miami skyline backlit in "
+               "silhouette, a warm reflection on the glass",
+    },
+    "evening": {
+        "mood": "Blue-hour interior, warm recessed downlights on, soft ambient glow, dim "
+                "natural light through the glass.",
+        "sky": "a deep blue dusk sky over the water, the Miami skyline lit with warm window "
+               "lights, a calm dark reflection on the glass",
+    },
+    "night": {
+        "mood": "Nighttime interior, warm recessed downlights fully on, soft pools of warm "
+                "light, dark windows.",
+        "sky": "a dark night sky over the water, the Miami skyline glittering with lights, "
+               "a still black reflection on the glass",
+    },
+}
+
+
+def view_clause(lighting: str) -> str:
+    """View rooms: the curved bay glass, with the exterior sky/water/skyline
+    driven by the requested lighting condition. NOTE: the generic
+    water/skyline description here is a placeholder pending the property's
+    actual Section 3 (THE VIEW) stack/floor content - not yet replaced
+    (tracked separately, out of scope for the lighting feature itself)."""
+    sky = LIGHTING[lighting]["sky"]
+    return (
+        "A gently curved floor-to-ceiling glass curtain wall with slim aluminium mullions "
+        f"opens to a wide Biscayne Bay view: {sky}, a slim glass balcony railing just outside."
+    )
 INTERIOR_CLAUSE = (
     "An interior room with no exterior view; a clean warm-white plaster feature wall "
     "where the camera faces. Do not invent windows or a view the plan does not show."
@@ -72,7 +117,7 @@ ROOM_CHARACTER = {
                 "empty": "A quiet den / study, empty, clean warm-white walls, soft even light.",
                 "staged": "A den with a walnut desk, a single reading chair and low integrated shelving."},
     "terrace": {"view": True,
-                "empty": "A wraparound outdoor terrace in warm stone paving, a full-height glass railing, wide open Biscayne Bay and a golden sunrise beyond.",
+                "empty": "A wraparound outdoor terrace in warm stone paving, a full-height glass railing, open to Biscayne Bay beyond.",
                 "staged": "The terrace with two low chaise lounges and a summer-kitchen counter along the wall."},
 }
 
@@ -99,7 +144,13 @@ GENERIC_ROOM_TYPE_CHARACTER = {
 }
 
 
-def build_prompt(room_id, room_name, width_ft=None, length_ft=None, view=None, staged=False, room_type=None):
+def build_prompt(room_id, room_name, width_ft=None, length_ft=None, view=None, staged=False,
+                  room_type=None, lighting=None):
+    """lighting: one of LIGHTING's keys (sunrise/daylight/sunset/evening/night).
+    Unknown or omitted falls back to DEFAULT_LIGHTING - never a KeyError, and
+    every existing caller that doesn't pass it gets exactly today's daylight
+    look, unchanged."""
+    lighting = lighting if lighting in LIGHTING else DEFAULT_LIGHTING
     if room_id in ROOM_CHARACTER:
         char = ROOM_CHARACTER[room_id]
     else:
@@ -108,10 +159,10 @@ def build_prompt(room_id, room_name, width_ft=None, length_ft=None, view=None, s
     is_view = char.get("view", bool(view))
     dims = f"approximately {width_ft:g} by {length_ft:g} feet, " if width_ft and length_ft else ""
     body = char["staged" if staged else "empty"]
-    view_clause = VIEW_CLAUSE if is_view else INTERIOR_CLAUSE
+    view_text = view_clause(lighting) if is_view else INTERIOR_CLAUSE
     return (f"{CAMERA}\n"
             f"Subject: the {room_name} of a single luxury Miami residence, {dims}"
             f"11-foot ceilings. {body}\n"
-            f"{view_clause}\n"
-            f"Style: {DESIGN_LANGUAGE}\n"
+            f"{view_text}\n"
+            f"Style: {DESIGN_LANGUAGE} {LIGHTING[lighting]['mood']}\n"
             f"{QUALITY}")

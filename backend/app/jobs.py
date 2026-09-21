@@ -50,6 +50,13 @@ def init_db():
         CREATE UNIQUE INDEX IF NOT EXISTS idx_jobs_project_idem
           ON jobs(project_id, idempotency_key) WHERE idempotency_key IS NOT NULL;
         """)
+        # Lightweight migration for a DB created before the lighting column
+        # existed - CREATE TABLE IF NOT EXISTS above won't add it to an
+        # already-existing table.
+        try:
+            c.execute("ALTER TABLE jobs ADD COLUMN lighting_json TEXT")
+        except sqlite3.OperationalError:
+            pass
         c.execute("UPDATE jobs SET status='error', error='API restarted while job was running', updated_at=? WHERE status='running'", (_now(),))
 
 
@@ -67,7 +74,7 @@ def project_exists(pid: str) -> bool:
 
 def create(project_id: str, unit_id: str, plan: Path | None, staged: bool, only: list | None,
            provider: str | None, idempotency_key: str | None = None,
-           webhook_url: str | None = None) -> tuple[str, bool]:
+           webhook_url: str | None = None, lighting: list[str] | None = None) -> tuple[str, bool]:
     if idempotency_key:
         with _conn() as c:
             row = c.execute("SELECT id FROM jobs WHERE project_id=? AND idempotency_key=?", (project_id, idempotency_key)).fetchone()
@@ -76,9 +83,9 @@ def create(project_id: str, unit_id: str, plan: Path | None, staged: bool, only:
     jid = uuid.uuid4().hex[:12]
     now = _now()
     with _conn() as c:
-        c.execute("INSERT INTO jobs(id,project_id,unit_id,status,idempotency_key,webhook_url,plan_path,provider,staged,only_json,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+        c.execute("INSERT INTO jobs(id,project_id,unit_id,status,idempotency_key,webhook_url,plan_path,provider,staged,only_json,lighting_json,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
                   (jid, project_id, unit_id, "pending", idempotency_key, webhook_url, str(plan) if plan else None,
-                   provider, int(staged), json.dumps(only or []), now, now))
+                   provider, int(staged), json.dumps(only or []), json.dumps(lighting or []), now, now))
     _EXECUTOR.submit(run, jid)
     return jid, False
 
@@ -97,6 +104,7 @@ def get(jid: str) -> dict | None:
         return None
     d = dict(row)
     d.pop("only_json", None)
+    d.pop("lighting_json", None)
     d.pop("plan_path", None)
     d["manifest"] = json.loads(d["manifest_json"]) if d.get("manifest_json") else None
     d.pop("manifest_json", None)
@@ -110,8 +118,10 @@ def run(jid: str):
         return
     _update(jid, status="running", error=None)
     try:
+        lighting = json.loads(row["lighting_json"] or "[]") or None
         manifest = generate_unit(row["unit_id"], Path(row["plan_path"]) if row["plan_path"] else None,
-                                 bool(row["staged"]), json.loads(row["only_json"] or "[]") or None, row["provider"] or None)
+                                 bool(row["staged"]), json.loads(row["only_json"] or "[]") or None, row["provider"] or None,
+                                 lighting)
         _update(jid, status="done", manifest_json=json.dumps(manifest, ensure_ascii=False), error=None)
         _webhook(row["webhook_url"], jid, "done", manifest)
     except Exception as exc:

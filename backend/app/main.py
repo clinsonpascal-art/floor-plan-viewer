@@ -143,6 +143,7 @@ async def create_job(project_id: str,
                      webhook_url: str | None = Form(None),
                      file: UploadFile | None = File(None),
                      total_interior_sqft: float | None = Form(None),
+                     lighting: str = Form(""),
                      idempotency_key: str | None = Header(None, alias="Idempotency-Key"),
                      _=Depends(auth)):
     if not jobs.project_exists(project_id):
@@ -167,8 +168,14 @@ async def create_job(project_id: str,
     if plan is not None:
         plan_upload_meta.write_plan_meta(plan, total_interior_sqft)
     only_list = [s.strip() for s in only.split(",") if s.strip()] or None
+    # Client-facing lighting/daylight controls (sunrise/daylight/sunset/evening/night) -
+    # each requested condition becomes one more real generated viewpoint per room
+    # (see prompts.LIGHTING / pipeline.generate_unit). Unknown values are silently
+    # dropped in generate_unit rather than erroring, same tolerance as `only`.
+    lighting_list = [s.strip().lower() for s in lighting.split(",") if s.strip()] or None
     target_unit = unit_id or project_id
-    jid, reused = jobs.create(project_id, target_unit, plan, staged, only_list, provider or None, idempotency_key, webhook_url)
+    jid, reused = jobs.create(project_id, target_unit, plan, staged, only_list, provider or None,
+                              idempotency_key, webhook_url, lighting_list)
     return {"job_id": jid, "project_id": project_id, "status": "pending", "idempotent_reuse": reused,
             "status_url": f"/api/v1/jobs/{jid}"}
 
