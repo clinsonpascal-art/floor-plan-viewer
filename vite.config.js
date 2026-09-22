@@ -1,7 +1,20 @@
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { resolve } from "node:path";
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-})
+  server: {
+    host: "0.0.0.0",
+    allowedHosts: true
+  },
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(import.meta.dirname, "index.html"),
+        poc: resolve(import.meta.dirname, "poc.html"),
+        unit: resolve(import.meta.dirname, "unit.html"),
+      },
+    },
+  },
+});
