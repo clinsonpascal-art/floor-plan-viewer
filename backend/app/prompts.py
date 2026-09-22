@@ -27,6 +27,11 @@ DESIGN_LANGUAGE = (
 # "sky": the exterior sky/water/skyline description (view rooms only, spliced
 # into view_clause()). Keep these paired so a room's interior light and its
 # visible exterior light always agree with each other.
+# "atmosphere": a location-agnostic version of "sky" - light/color/reflection
+# only, no Miami/Biscayne Bay nouns - used by get_view_clause() so the same
+# daylight condition can drive ANY waterfront_type/city, not just the fixed
+# Biscayne Bay scene "sky" describes. "mood"/"sky" are unchanged so view_clause()
+# and every existing caller/test keep producing byte-identical output.
 DEFAULT_LIGHTING = "daylight"
 LIGHTING = {
     "sunrise": {
@@ -34,30 +39,39 @@ LIGHTING = {
                 "gentle low-angle sun, high dynamic range.",
         "sky": "a soft golden sunrise low over the water, calm turquoise-to-rose water, the "
                "Miami skyline silhouetted on the horizon, a bright warm reflection on the glass",
+        "atmosphere": "a soft golden sunrise light, calm low-angle glow, a bright warm reflection "
+                      "on the glass",
     },
     "daylight": {
         "mood": "Bright even midday daylight, high-key natural light, crisp soft shadows, "
                 "high dynamic range.",
         "sky": "a clear bright midday sky, calm turquoise water, the Miami skyline sharp on "
                "the horizon in full sun",
+        "atmosphere": "a clear bright midday light, crisp full-sun clarity",
     },
     "sunset": {
         "mood": "Warm late-afternoon light, long amber shadows, golden-hour glow across the "
                 "floor and walls.",
         "sky": "a warm orange-and-pink sunset over the water, the Miami skyline backlit in "
                "silhouette, a warm reflection on the glass",
+        "atmosphere": "a warm orange-and-pink sunset glow, golden-hour light, a warm reflection "
+                      "on the glass",
     },
     "evening": {
         "mood": "Blue-hour interior, warm recessed downlights on, soft ambient glow, dim "
                 "natural light through the glass.",
         "sky": "a deep blue dusk sky over the water, the Miami skyline lit with warm window "
                "lights, a calm dark reflection on the glass",
+        "atmosphere": "a deep blue dusk light, distant lights beginning to glow, a calm dark "
+                      "reflection on the glass",
     },
     "night": {
         "mood": "Nighttime interior, warm recessed downlights fully on, soft pools of warm "
                 "light, dark windows.",
         "sky": "a dark night sky over the water, the Miami skyline glittering with lights, "
                "a still black reflection on the glass",
+        "atmosphere": "a dark night sky, distant lights glittering, a still black reflection "
+                      "on the glass",
     },
 }
 
@@ -73,6 +87,96 @@ def view_clause(lighting: str) -> str:
         "A gently curved floor-to-ceiling glass curtain wall with slim aluminium mullions "
         f"opens to a wide Biscayne Bay view: {sky}, a slim glass balcony railing just outside."
     )
+
+
+# --- Dynamic outlook system (waterfront_type / city / direction / floor) ---
+# Kept separate from the lighting/daylight feature above, and from any real
+# property's actual view content - this is a generic, reusable clause
+# generator driven only by the caller's parameters, never a hardcoded or
+# invented specific view.
+
+WATERFRONT_TYPES = {
+    "oceanfront": "the open ocean stretching to a wide horizon",
+    "bayfront": "a wide bay of calm open water",
+    "intracoastal": "the Intracoastal Waterway, calm channel water with docks and a low "
+                    "landscaped shoreline",
+    "urban_skyline": "the city skyline",
+}
+DEFAULT_WATERFRONT_TYPE = "bayfront"
+DEFAULT_CITY = "Miami"
+
+# Floor elevation bands: (min_floor, max_floor_inclusive_or_None_for_open_ended, clause).
+FLOOR_ELEVATION_BANDS = (
+    (1, 15, "a lower-level outlook over the surrounding tree canopy and neighboring rooftops"),
+    (16, 35, "an open mid-level vista across open water with a clear horizon"),
+    (36, None, "a sweeping high-altitude outlook over a deep, distant horizon"),
+)
+
+_DIRECTION_ALIASES = {
+    "n": "north", "ne": "northeast", "e": "east", "se": "southeast",
+    "s": "south", "sw": "southwest", "w": "west", "nw": "northwest",
+}
+
+
+def _elevation_clause(floor) -> str | None:
+    """None/non-integer/below band 1 -> no elevation clause, never an error."""
+    try:
+        floor = int(floor)
+    except (TypeError, ValueError):
+        return None
+    for lo, hi, text in FLOOR_ELEVATION_BANDS:
+        if floor >= lo and (hi is None or floor <= hi):
+            return text
+    return None
+
+
+def _direction_word(direction: str | None) -> str | None:
+    """Normalizes common compass abbreviations/casing; an unrecognized but
+    non-empty value is still used verbatim rather than dropped, so a caller's
+    direction always affects the output."""
+    if not direction or not direction.strip():
+        return None
+    key = direction.strip().lower()
+    return _DIRECTION_ALIASES.get(key, key)
+
+
+def get_view_clause(daylight: str | None = None, waterfront_type: str | None = None,
+                    city: str | None = None, direction: str | None = None,
+                    floor=None) -> str:
+    """Reusable, parameterized outlook system (Requirement 1).
+
+    Every argument is optional. Passing none of waterfront_type/city/direction/
+    floor reproduces view_clause()'s exact existing text, so build_prompt()
+    callers that only ever passed `lighting` are completely unaffected.
+    Unknown waterfront_type/daylight values fall back to a default rather than
+    raising, same tolerance already used for LIGHTING elsewhere in this module.
+    """
+    daylight = daylight if daylight in LIGHTING else DEFAULT_LIGHTING
+    if waterfront_type is None and city is None and direction is None and floor is None:
+        return view_clause(daylight)
+
+    wf = waterfront_type if waterfront_type in WATERFRONT_TYPES else DEFAULT_WATERFRONT_TYPE
+    city_name = city or DEFAULT_CITY
+    atmosphere = LIGHTING[daylight]["atmosphere"]
+
+    if wf == "urban_skyline":
+        subject = f"{WATERFRONT_TYPES[wf]} of {city_name}"
+    else:
+        subject = f"{WATERFRONT_TYPES[wf]}, the {city_name} skyline visible on the horizon"
+
+    direction_word = _direction_word(direction)
+    direction_frag = f", facing {direction_word}" if direction_word else ""
+
+    elevation_text = _elevation_clause(floor)
+    elevation_frag = f" — {elevation_text}" if elevation_text else ""
+
+    return (
+        "A gently curved floor-to-ceiling glass curtain wall with slim aluminium mullions "
+        f"opens to {subject}{direction_frag}{elevation_frag}: {atmosphere}, "
+        "a slim glass balcony railing just outside."
+    )
+
+
 INTERIOR_CLAUSE = (
     "An interior room with no exterior view; a clean warm-white plaster feature wall "
     "where the camera faces. Do not invent windows or a view the plan does not show."
@@ -145,11 +249,17 @@ GENERIC_ROOM_TYPE_CHARACTER = {
 
 
 def build_prompt(room_id, room_name, width_ft=None, length_ft=None, view=None, staged=False,
-                  room_type=None, lighting=None):
+                  room_type=None, lighting=None, waterfront_type=None, city=None,
+                  direction=None, floor=None):
     """lighting: one of LIGHTING's keys (sunrise/daylight/sunset/evening/night).
     Unknown or omitted falls back to DEFAULT_LIGHTING - never a KeyError, and
     every existing caller that doesn't pass it gets exactly today's daylight
-    look, unchanged."""
+    look, unchanged.
+
+    waterfront_type/city/direction/floor: the dynamic outlook system
+    (Requirement 1, see get_view_clause()). Omitting all four reproduces
+    today's fixed Biscayne Bay view exactly - existing callers are
+    unaffected."""
     lighting = lighting if lighting in LIGHTING else DEFAULT_LIGHTING
     if room_id in ROOM_CHARACTER:
         char = ROOM_CHARACTER[room_id]
@@ -159,7 +269,9 @@ def build_prompt(room_id, room_name, width_ft=None, length_ft=None, view=None, s
     is_view = char.get("view", bool(view))
     dims = f"approximately {width_ft:g} by {length_ft:g} feet, " if width_ft and length_ft else ""
     body = char["staged" if staged else "empty"]
-    view_text = view_clause(lighting) if is_view else INTERIOR_CLAUSE
+    view_text = (get_view_clause(daylight=lighting, waterfront_type=waterfront_type, city=city,
+                                 direction=direction, floor=floor)
+                if is_view else INTERIOR_CLAUSE)
     return (f"{CAMERA}\n"
             f"Subject: the {room_name} of a single luxury Miami residence, {dims}"
             f"11-foot ceilings. {body}\n"

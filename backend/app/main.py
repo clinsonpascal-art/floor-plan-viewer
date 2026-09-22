@@ -144,6 +144,12 @@ async def create_job(project_id: str,
                      file: UploadFile | None = File(None),
                      total_interior_sqft: float | None = Form(None),
                      lighting: str = Form(""),
+                     # Dynamic outlook parameters (Requirement 1, see
+                     # prompts.get_view_clause) - all optional; omitting them
+                     # preserves today's fixed-view behavior unchanged.
+                     waterfront_type: str = Form(""), city: str = Form(""),
+                     direction: str = Form(""), floor: int | None = Form(None),
+                     building_slug: str = Form(""),
                      idempotency_key: str | None = Header(None, alias="Idempotency-Key"),
                      _=Depends(auth)):
     if not jobs.project_exists(project_id):
@@ -175,7 +181,9 @@ async def create_job(project_id: str,
     lighting_list = [s.strip().lower() for s in lighting.split(",") if s.strip()] or None
     target_unit = unit_id or project_id
     jid, reused = jobs.create(project_id, target_unit, plan, staged, only_list, provider or None,
-                              idempotency_key, webhook_url, lighting_list)
+                              idempotency_key, webhook_url, lighting_list,
+                              waterfront_type or None, city or None, direction or None,
+                              floor, building_slug or None)
     return {"job_id": jid, "project_id": project_id, "status": "pending", "idempotent_reuse": reused,
             "status_url": f"/api/v1/jobs/{jid}"}
 
@@ -304,6 +312,9 @@ def _done_manifest(job_id: str) -> dict:
 async def generate_legacy(unit_id: str, background: BackgroundTasks,
                           staged: bool = Form(False), only: str = Form(""),
                           provider: str = Form(""), lighting: str = Form(""),
+                          waterfront_type: str = Form(""), city: str = Form(""),
+                          direction: str = Form(""), floor: int | None = Form(None),
+                          building_slug: str = Form(""),
                           file: UploadFile | None = File(None)):
     plan_path = None
     if file is not None:
@@ -320,7 +331,9 @@ async def generate_legacy(unit_id: str, background: BackgroundTasks,
     only_list = [s.strip() for s in only.split(",") if s.strip()] or None
     lighting_list = [s.strip().lower() for s in lighting.split(",") if s.strip()] or None
     jid, _ = jobs.create(unit_id, unit_id, plan_path, staged, only_list, provider or None,
-                         lighting=lighting_list)
+                         lighting=lighting_list, waterfront_type=waterfront_type or None,
+                         city=city or None, direction=direction or None, floor=floor,
+                         building_slug=building_slug or None)
     tracking.track("unit3d_generate", {"unit": unit_id, "job": jid, "staged": staged})
     return {"job_id": jid}
 

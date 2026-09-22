@@ -23,11 +23,21 @@ LIGHTING_LABELS = {"sunrise": "Sunrise", "daylight": "Daylight", "sunset": "Suns
 
 def generate_unit(unit_id: str, plan: Path | None = None, staged: bool = False,
                   only: list | None = None, provider: str | None = None,
-                  lighting: list[str] | None = None) -> dict:
+                  lighting: list[str] | None = None, waterfront_type: str | None = None,
+                  city: str | None = None, direction: str | None = None,
+                  floor=None, building_slug: str | None = None) -> dict:
     """lighting: optional list of prompts.LIGHTING conditions to generate as
     additional real viewpoints per room (e.g. ["sunrise","daylight","sunset"]).
     Unknown entries are dropped; duplicates collapse; order is preserved.
-    None/empty -> exactly today's single-image-per-room behavior, unchanged."""
+    None/empty -> exactly today's single-image-per-room behavior, unchanged.
+
+    waterfront_type/city/direction/floor: dynamic outlook parameters (see
+    prompts.get_view_clause) forwarded to every view room's prompt. All
+    optional; omitting them reproduces today's fixed view text unchanged.
+
+    building_slug: opaque caller-supplied identifier recorded on the manifest
+    for traceability across buildings. It does not affect the generated
+    outlook - only waterfront_type/city/direction/floor/lighting do."""
     prov_name = provider or resolve_provider()
     prov = get_provider(prov_name)
     rooms = analyze.get_rooms(unit_id, plan, prov_name, only)
@@ -74,7 +84,9 @@ def generate_unit(unit_id: str, plan: Path | None = None, staged: bool = False,
                 else:
                     prompt = prompts.build_prompt(rid, r["name"], r.get("width_ft"), r.get("length_ft"),
                                                   view=r.get("view", False), staged=staged,
-                                                  room_type=r.get("room_type"), lighting=cond)
+                                                  room_type=r.get("room_type"), lighting=cond,
+                                                  waterfront_type=waterfront_type, city=city,
+                                                  direction=direction, floor=floor)
                     img = prov.generate(prompt, settings.image_size, control)
                     (out / f"{rid}.{cond}.jpg").write_bytes(img)
                 cond_url = f"{settings.public_base}/{unit_id}/{rid}.{cond}.jpg"
@@ -85,7 +97,9 @@ def generate_unit(unit_id: str, plan: Path | None = None, staged: bool = False,
             for cond in conditions:
                 prompt = prompts.build_prompt(rid, r["name"], r.get("width_ft"), r.get("length_ft"),
                                               view=r.get("view", False), staged=staged,
-                                              room_type=r.get("room_type"), lighting=cond)
+                                              room_type=r.get("room_type"), lighting=cond,
+                                              waterfront_type=waterfront_type, city=city,
+                                              direction=direction, floor=floor)
                 img = prov.generate(prompt, settings.image_size, control)
                 (out / f"{rid}.{cond}.jpg").write_bytes(img)
                 cond_url = f"{settings.public_base}/{unit_id}/{rid}.{cond}.jpg"
@@ -97,7 +111,9 @@ def generate_unit(unit_id: str, plan: Path | None = None, staged: bool = False,
             url = f"{settings.public_base}/{unit_id}/{rid}.jpg"
         else:
             prompt = prompts.build_prompt(rid, r["name"], r.get("width_ft"), r.get("length_ft"),
-                                          view=r.get("view", False), staged=staged, room_type=r.get("room_type"))
+                                          view=r.get("view", False), staged=staged, room_type=r.get("room_type"),
+                                          waterfront_type=waterfront_type, city=city,
+                                          direction=direction, floor=floor)
             img = prov.generate(prompt, settings.image_size, control)
             (out / f"{rid}.jpg").write_bytes(img)
             url = f"{settings.public_base}/{unit_id}/{rid}.jpg"
@@ -122,6 +138,8 @@ def generate_unit(unit_id: str, plan: Path | None = None, staged: bool = False,
         "window.LUXE_PANOS = " + json.dumps(panos, ensure_ascii=False, indent=2) + ";\n", encoding="utf-8")
     manifest = {"unit": unit_id, "status": "review_required", "provider": prov_name,
                 "disclaimer": DISCLAIMER, "order": order, "rooms": graph}
+    if building_slug:
+        manifest["building_slug"] = building_slug
     src = source_info(unit_id, plan)
     if src:
         manifest["source_plan"] = {"type": src["type"], "file": src["file"],
